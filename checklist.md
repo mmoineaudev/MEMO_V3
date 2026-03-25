@@ -1,0 +1,591 @@
+# MEMO_V2 - Activity Tracker GUI
+
+## Overall Goal
+Build a Swing-based GUI application for activity tracking with CSV storage, replacing the legacy CLI implementation.
+
+## Main Architectural and Technical Guidelines
+- Maven project with minimal dependencies (Swing only, no external libraries)
+- Clean Code principles: small methods, meaningful names, single responsibility
+- Strict TDD: write tests first, green/red/refactor cycle
+- Resizable components using layout managers (GridBagLayout or SpringLayout)
+- CSV storage in configurable directory (default: ~/.MEMO/)
+- Follow existing data model from legacy ActivityTracker.java
+- Commits after each change with descriptive messages
+
+## Scope Definition
+- GUI with resizable panels for entry form, history view, and search
+- Activity entry with large text areas and history reuse (last 10 distinct descriptions)
+- Search functionality across all CSV columns
+- Daily and weekly time sums per activity description
+- CSV file storage with auto-creation of storage directory
+- History always visible (no pagination, performance not a concern)
+
+## Cross-Reference Matrix
+| User Feature | Use Cases |
+|--------------|-----------|
+| New entry edition | UC-001, UC-002 |
+| History reuse | UC-001 |
+| Search functionality | UC-003, UC-004 |
+| Time sums (daily/weekly) | UC-005, UC-006, UC-007 |
+| Resizable components | UC-008 |
+| CSV storage config | UC-009, UC-010 |
+| Display all history | UC-011 |
+
+---
+
+# Use Case: UC-001 Create New Activity Entry
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User logs new activity with description, status, comment, and optional time
+* Scope: Entry form with reusable history
+* Level: Functional requirement
+* Preconditions: Application running, storage directory exists
+* Success End Condition: Entry written to CSV file
+* Failed End Condition: Invalid input rejected, no file modification
+* Primary Actor: User
+* Trigger: User clicks "New Entry" button
+
+### MAIN SUCCESS SCENARIO
+
+1. User initiates new entry
+2. Form displays with pre-populated description from last 10 distinct entries
+3. User fills activity type, description, status, comment
+4. User optionally enters time spent (or leaves as 0)
+5. User confirms entry
+6. Entry appended to current day's CSV file
+7. History view refreshes to show new entry
+
+### EXTENSIONS
+
+1a <step 2> <No previous entries exist> : Start with empty description field
+
+2a <step 2> <User selects from history> : Auto-populate description with selected history item
+
+4a <step 4> <Invalid time format> : Show error, require valid format or empty
+
+5a <step 5> <User cancels> : Discard entry, return to history view
+
+### SUB-VARIATIONS
+
+1 <list of sub-variations> : Can be triggered from toolbar button, menu, or keyboard shortcut (Ctrl+N)
+
+4 <list of sub-variations> : Time can be entered as decimal (0.5) or left blank for "just started"
+
+### RELATED INFORMATION (optional)
+
+* Priority: Critical
+* Performance Target: <100ms for save operation
+* Frequency: Multiple times per day
+
+---
+
+# Use Case: UC-002 Display History of All Entries
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User views all logged activities across all CSV files
+* Scope: Scrollable history panel showing all entries
+* Level: Functional requirement
+* Preconditions: CSV files exist in storage directory
+* Success End Condition: All entries displayed with timestamps, timespans, and calculated totals
+* Failed End Condition: Empty state shown if no entries exist
+* Primary Actor: User
+* Trigger: Application startup or manual refresh
+
+### MAIN SUCCESS SCENARIO
+
+1. Application loads or user requests refresh
+2. Storage directory scanned for CSV files matching project pattern
+3. All entries read from all CSV files
+4. Entries displayed in chronological order (oldest first)
+5. Daily total time calculated and displayed
+6. Per-activity time summary displayed
+
+### EXTENSIONS
+
+1a <step 2> <No CSV files found> : Display empty state message
+
+3a <step 3> <File read error> : Log error, skip problematic file, continue with others
+
+### SUB-VARIATIONS
+
+4 <list of sub-variations> : Can sort by date, activity type, or time spent
+
+### RELATED INFORMATION (optional)
+
+* Priority: Critical
+* Performance Target: <1s to load 100 files
+* Frequency: On startup, manual refresh
+
+---
+
+# Use Case: UC-003 Search Activity Entries
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User searches across all CSV columns for specific entries
+* Scope: Search dialog with multiple field filters
+* Level: Functional requirement
+* Preconditions: History loaded
+* Success End Condition: Matching entries displayed with time sum
+* Failed End Condition: No results shown if no matches
+* Primary Actor: User
+* Trigger: User opens search dialog and enters criteria
+
+### MAIN SUCCESS SCENARIO
+
+1. User opens search dialog
+2. User enters search criteria (activity type, description, status, comment, date range)
+3. Search executed across all CSV entries
+4. Matching entries displayed in result panel
+5. Time sum calculated for filtered results
+6. User can select result to view full entry details
+
+### EXTENSIONS
+
+2a <step 2> <No criteria entered> : Show all entries (equivalent to no filter)
+
+3a <step 3> <Search error> : Show error message, keep previous results
+
+### SUB-VARIATIONS
+
+1 <list of sub-variations> : Can be triggered from toolbar, menu, or keyboard shortcut (Ctrl+F)
+
+2 <list of sub-variations> : Supports partial matching, case-insensitive search
+
+### RELATED INFORMATION (optional)
+
+* Priority: High
+* Performance Target: <500ms for search execution
+* Frequency: Several times per week
+
+---
+
+# Use Case: UC-004 Display Search Results with Time Sum
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User views filtered results with calculated time totals
+* Scope: Result panel with summary statistics
+* Level: Functional requirement
+* Preconditions: Search executed with results
+* Success End Condition: Results displayed with individual and total time
+* Failed End Condition: Empty state if no matches
+* Primary Actor: User
+* Trigger: Search completion
+
+### MAIN SUCCESS SCENARIO
+
+1. Search results displayed in scrollable list
+2. Each entry shows: timestamp, activity type, description, status, comment
+3. Individual time spent shown per entry
+4. Total time sum displayed at bottom of results
+5. Results can be sorted by any column
+
+### EXTENSIONS
+
+1a <step 1> <No search results> : Show "No matches found" message
+
+### SUB-VARIATIONS
+
+4 <list of sub-variations> : Can group by date, activity type, or show as flat list
+
+### RELATED INFORMATION (optional)
+
+* Priority: High
+* Performance Target: Display <100ms after search
+* Frequency: After each search
+
+---
+
+# Use Case: UC-005 Calculate Daily Time Summary
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User views total time spent per activity type for current day
+* Scope: Summary panel with per-activity breakdown
+* Level: Functional requirement
+* Preconditions: Entries loaded from CSV files
+* Success End Condition: Time summary displayed with daily total
+* Failed End Condition: Summary not shown if no entries with time data
+* Primary Actor: User
+* Trigger: Display of history view
+
+### MAIN SUCCESS SCENARIO
+
+1. All entries read from CSV files
+2. Entries grouped by activity type
+3. Time spent summed per activity type
+4. Daily total calculated (sum of all entries)
+5. Summary displayed with activity type, days, hours, minutes
+6. Color-coded for readability
+
+### EXTENSIONS
+
+2a <step 2> <No activity types> : Show empty summary
+
+### SUB-VARIATIONS
+
+5 <list of sub-variations> : Can show as list, table, or visual bars
+
+### RELATED INFORMATION (optional)
+
+* Priority: Critical
+* Performance Target: <100ms calculation
+* Frequency: On each history display
+
+---
+
+# Use Case: UC-006 Calculate Weekly Time Summary
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User views total time spent per activity type for current week
+* Scope: Weekly summary dialog/panel
+* Level: Functional requirement
+* Preconditions: Entries loaded from CSV files
+* Success End Condition: Weekly summary displayed with per-activity breakdown
+* Failed End Condition: Summary not shown if no entries in week
+* Primary Actor: User
+* Trigger: User requests weekly summary
+
+### MAIN SUCCESS SCENARIO
+
+1. User opens weekly summary dialog
+2. Current week range calculated (Monday to Sunday)
+3. Entries filtered by week range
+4. Entries grouped by activity type
+5. Time spent summed per activity type
+6. Summary displayed with activity type, days, hours
+
+### EXTENSIONS
+
+2a <step 2> <Custom week range> : User can select different week range
+
+3a <step 3> <No entries in week> : Show message "No entries in selected week"
+
+### SUB-VARIATIONS
+
+6 <list of sub-variations> : Can show rolling 7 days, or fixed Monday-Sunday
+
+### RELATED INFORMATION (optional)
+
+* Priority: High
+* Performance Target: <500ms calculation
+* Frequency: Weekly review
+
+---
+
+# Use Case: UC-007 Display Weekly Summary Popup
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User views weekly summary in a popup dialog
+* Scope: Modal or non-modal dialog with summary data
+* Level: Functional requirement
+* Preconditions: Weekly calculation complete
+* Success End Condition: Summary visible in popup with all required information
+* Failed End Condition: Error shown if calculation fails
+* Primary Actor: User
+* Trigger: User clicks weekly summary button/menu
+
+### MAIN SUCCESS SCENARIO
+
+1. User triggers weekly summary action
+2. Weekly calculation executed (if not cached)
+3. Popup dialog opens with summary data
+4. Summary shows per-activity breakdown
+5. Total weekly time displayed
+6. User can close popup or export data
+
+### EXTENSIONS
+
+3a <step 3> <Large dataset> : Show loading indicator during calculation
+
+6a <step 6> <Export requested> : Save summary to text file
+
+### SUB-VARIATIONS
+
+1 <list of sub-variations> : Can be toolbar button, menu item, or keyboard shortcut (Ctrl+W)
+
+### RELATED INFORMATION (optional)
+
+* Priority: High
+* Performance Target: Popup opens <200ms
+* Frequency: Weekly
+
+---
+
+# Use Case: UC-008 Resize Application Components
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User can resize all panels and components dynamically
+* Scope: Layout management for resizable UI
+* Level: Technical requirement
+* Preconditions: Application window open
+* Success End Condition: Components resize and reflow properly
+* Failed End Condition: Components overlap or become unusable
+* Primary Actor: User
+* Trigger: User drags window border or panel divider
+
+### MAIN SUCCESS SCENARIO
+
+1. User resizes main application window
+2. All panels resize proportionally or according to layout constraints
+3. Component text areas expand/collapse with available space
+4. Scrollbars appear when content exceeds visible area
+5. Layout maintains readability and usability
+
+### EXTENSIONS
+
+1a <step 1> <Panel divider resize> : User drags divider between panels
+
+2a <step 2> <Minimum size enforced> : Components don't shrink below readable size
+
+### SUB-VARIATIONS
+
+1 <list of sub-variations> : Can resize vertically, horizontally, or both
+
+### RELATED INFORMATION (optional)
+
+* Priority: Medium
+* Performance Target: Resize response <50ms
+* Frequency: As needed by user
+
+---
+
+# Use Case: UC-009 Configure Storage Directory
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User can configure and change CSV storage directory
+* Scope: Configuration dialog/settings panel
+* Level: Functional requirement
+* Preconditions: Application settings accessible
+* Success End Condition: New storage directory set and applied
+* Failed End Condition: Invalid directory rejected, previous setting retained
+* Primary Actor: User
+* Trigger: User opens settings and changes storage path
+
+### MAIN SUCCESS SCENARIO
+
+1. User opens settings/preferences dialog
+2. User navigates to storage configuration
+3. User enters or browses for storage directory path
+4. Application validates directory path
+5. Application creates directory if it doesn't exist
+6. Setting saved and applied immediately
+7. All future CSV files use new storage directory
+
+### EXTENSIONS
+
+3a <step 3> <Invalid path> : Show error, require valid path
+
+4a <step 4> <Path not writable> : Show error, require different path
+
+5a <step 5> <Directory creation fails> : Show error, require different path
+
+### SUB-VARIATIONS
+
+6 <list of sub-variations> : Can set per-project storage or global default
+
+### RELATED INFORMATION (optional)
+
+* Priority: Medium
+* Performance Target: <100ms for setting change
+* Frequency: Rare (initial setup only)
+
+---
+
+# Use Case: UC-010 Auto-create Storage Directory
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: Application creates storage directory automatically if missing
+* Scope: Directory creation on application startup
+* Level: Technical requirement
+* Preconditions: Storage path configured
+* Success End Condition: Storage directory exists and is writable
+* Failed End Condition: Error shown if directory cannot be created
+* Primary Actor: Application
+* Trigger: Application startup
+
+### MAIN SUCCESS SCENARIO
+
+1. Application starts
+2. Storage path resolved (config or default ~/.MEMO/)
+3. Application checks if directory exists
+4. If not exists, create directory with parent directories
+5. Verify directory is writable
+6. Continue with normal startup
+
+### EXTENSIONS
+
+4a <step 4> <Permission denied> : Show error, exit with message
+
+5a <step 5> <Not writable> : Show error, exit with message
+
+### SUB-VARIATIONS
+
+3 <list of sub-variations> : Can also create if path is a file (error)
+
+### RELATED INFORMATION (optional)
+
+* Priority: Critical
+* Performance Target: <100ms for directory check/create
+* Frequency: On every startup
+
+---
+
+# Use Case: UC-011 Load All History on Startup
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: Application automatically displays all activity history on startup
+* Scope: Auto-load of history on application launch
+* Level: Functional requirement
+* Preconditions: Storage directory exists with CSV files
+* Success End Condition: All entries displayed in history view
+* Failed End Condition: Empty state shown if no files or load error
+* Primary Actor: User
+* Trigger: Application startup
+
+### MAIN SUCCESS SCENARIO
+
+1. Application launches
+2. Storage directory loaded
+3. All CSV files matching pattern found
+4. All entries read from all files
+5. Entries displayed in chronological order
+6. Time sums calculated and displayed
+7. History view ready for interaction
+
+### EXTENSIONS
+
+2a <step 2> <No storage directory> : Create directory (UC-010), show empty state
+
+3a <step 3> <No CSV files> : Show empty state with message
+
+4a <step 4> <File read error> : Log error, skip file, continue with others
+
+### SUB-VARIATIONS
+
+5 <list of sub-variations> : Can be disabled in settings for faster startup
+
+### RELATED INFORMATION (optional)
+
+* Priority: Critical
+* Performance Target: <1s for complete load
+* Frequency: On every startup
+
+---
+
+## Implementation Notes for Agents
+
+### Project Structure
+```
+memo-v2/
+├── pom.xml
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/
+│       │       └── memo/
+│       │           ├── MemoApplication.java
+│       │           ├── model/
+│       │           │   └── ActivityEntry.java
+│       │           ├── service/
+│       │           │   ├── CsvStorageService.java
+│       │           │   └── TimeCalculationService.java
+│       │           └── view/
+│       │               ├── MainFrame.java
+│       │               ├── EntryPanel.java
+│       │               ├── HistoryPanel.java
+│       │               └── SearchPanel.java
+│       └── resources/
+│           └── config.properties
+├── src/
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── memo/
+│                   ├── model/
+│                   │   └── ActivityEntryTest.java
+│                   ├── service/
+│                   │   ├── CsvStorageServiceTest.java
+│                   │   └── TimeCalculationServiceTest.java
+│                   └── view/
+│                       └── MemoApplicationTest.java
+└── log/ (storage directory, auto-created)
+```
+
+### Data Model (from legacy)
+CSV Format: `PROJECT;ACTIVITY_TYPE;DESCRIPTION;STATUS;COMMENT;TIMESTAMP;TIME_SPENT`
+
+Example: `CAPGEMINI;DEV;Code review JIRA-1234;TODO;;25/03/2026 09:30;0.0`
+
+### Key Classes to Implement
+1. **ActivityEntry** - Record/class for activity data (immutable)
+2. **CsvStorageService** - Read/write CSV files, directory management
+3. **TimeCalculationService** - Daily/weekly time sums, grouping
+4. **MainFrame** - Main window with resizable panels
+5. **EntryPanel** - New entry form with history reuse
+6. **HistoryPanel** - Scrollable list of all entries
+7. **SearchPanel** - Search dialog with filters
+8. **MemoApplication** - Application entry point
+
+### Maven Dependencies (Minimal)
+- Only Java standard library (no external deps)
+- Use JUnit 5 for testing (optional, can use system junit)
+
+### Layout Recommendations
+- Use GridBagLayout for main frame with resizable constraints
+- Use JSplitPane for vertical/horizontal dividers
+- Use JScrollPane for all content panels
+- Set minimum sizes for readability
+
+### TDD Approach
+1. Start with model tests (ActivityEntry parsing)
+2. Service tests (CSV I/O, time calculations)
+3. UI tests (swing tester or headless tests)
+4. Integration tests (full workflow)
+
+### Commit Pattern
+- Commit after each use case complete
+- Message format: `feat: UC-XXX <description>` or `test: UC-XXX <description>`
+- Push after each commit
