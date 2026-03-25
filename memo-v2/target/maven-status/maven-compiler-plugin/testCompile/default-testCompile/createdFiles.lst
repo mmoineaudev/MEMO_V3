@@ -1,0 +1,4 @@
+com/memo/model/ActivityEntryTest.class
+com/memo/service/CsvStorageServiceTest$FileOperations.class
+com/memo/service/CsvStorageServiceTest$DirectoryCreation.class
+com/memo/service/CsvStorageServiceTest.class
