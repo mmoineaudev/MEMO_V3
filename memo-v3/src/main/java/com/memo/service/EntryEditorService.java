@@ -60,13 +60,9 @@ public class EntryEditorService {
      * Save an entry to the CSV file.
      */
     public boolean saveEntry(ActivityEntry entry) {
-        if (historyService.getHistory().isEmpty()) {
-            // First entry, create new file
-            return saveToNewFile(entry);
-        } else {
-            // Append to existing file
-            return appendToFile(entry);
-        }
+        // Save all history to the default file (atomic write)
+        historyService.addEntry(entry);
+        return historyService.saveAllHistory(defaultFileName);
     }
     
     /**
@@ -80,21 +76,9 @@ public class EntryEditorService {
     
     /**
      * Append entry to existing file.
+     * Note: For simplicity, we save all history to the default file.
      */
     private boolean appendToFile(ActivityEntry entry) {
-        List<String> csvFiles = historyService.getHistory().isEmpty() ? 
-                new ArrayList<>() : historyService.getHistory().stream()
-                .map(e -> e.timestamp())
-                .filter(ts -> ts.contains("20"))
-                .findFirst()
-                .map(ts -> {
-                    String date = ts.split(" ")[0];
-                    return "activity_" + date.replace("/", "_") + ".csv";
-                })
-                .map(f -> List.of(f))
-                .orElse(List.of());
-        
-        // For now, just save all history to default file
         return historyService.saveAllHistory(defaultFileName);
     }
     

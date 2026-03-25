@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 /**
  * Service for managing activity history.
  * Loads all entries from CSV files on startup.
+ * 
+ * Note: The list returned by getHistory() should not be modified directly.
+ * Use the provided methods (addEntry, removeEntry, updateEntry) instead.
  */
 public class HistoryService {
     
@@ -21,13 +24,6 @@ public class HistoryService {
      */
     public HistoryService() {
         this(new CsvStorageService());
-    }
-    
-    /**
-     * Create a history service with custom storage path.
-     */
-    public HistoryService(String storagePath) {
-        this(new CsvStorageService(storagePath));
     }
     
     /**

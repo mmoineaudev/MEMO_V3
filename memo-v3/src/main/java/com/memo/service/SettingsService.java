@@ -11,30 +11,33 @@ import java.util.Properties;
 public class SettingsService {
     
     private static final String SETTINGS_FILE = "settings.properties";
-    private static final String KEY_STORAGE_DIR = "storage.directory";
+      private static final String KEY_STORAGE_DIR = "storage.directory";
     private static final String DEFAULT_STORAGE_DIR = "./log";
     
     private final Properties properties;
-    private Path settingsPath;
     
     /**
      * Create settings service.
      */
     public SettingsService() {
         this.properties = new Properties();
-        this.settingsPath = Paths.get(SETTINGS_FILE);
         loadSettings();
+        // Ensure default storage directory is set if not configured
+        if (!properties.containsKey(KEY_STORAGE_DIR)) {
+            setStorageDirectory(DEFAULT_STORAGE_DIR);
+        }
     }
     
     /**
      * Load settings from file.
      */
     private void loadSettings() {
+        Path settingsPath = Paths.get(SETTINGS_FILE);
         if (Files.exists(settingsPath)) {
             try (InputStream input = Files.newInputStream(settingsPath)) {
                 properties.load(input);
             } catch (IOException e) {
-                System.out.println("Could not load settings: " + e.getMessage());
+                System.err.println("Could not load settings: " + e.getMessage());
             }
         }
     }
@@ -43,10 +46,11 @@ public class SettingsService {
      * Save settings to file.
      */
     public void saveSettings() {
+        Path settingsPath = Paths.get(SETTINGS_FILE);
         try (OutputStream output = Files.newOutputStream(settingsPath)) {
             properties.store(output, "MEMO_V3 Settings");
         } catch (IOException e) {
-            System.out.println("Could not save settings: " + e.getMessage());
+            System.err.println("Could not save settings: " + e.getMessage());
         }
     }
     

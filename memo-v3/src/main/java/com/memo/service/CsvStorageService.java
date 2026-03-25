@@ -72,7 +72,7 @@ public class CsvStorageService {
                 }
             }
         } catch (IOException e) {
-            // Log error, return empty list
+            System.err.println("Error listing files in storage directory: " + e.getMessage());
         }
         return files;
     }

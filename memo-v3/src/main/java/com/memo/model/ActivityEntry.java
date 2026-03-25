@@ -22,8 +22,20 @@ public record ActivityEntry(
             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     
     /**
+     * Sanitize user input by replacing semicolons with exclamation marks.
+     * This prevents CSV parsing issues when users enter semicolons in their data.
+     */
+    private static String sanitizeInput(String input) {
+        if (input == null || input.isBlank()) {
+            return input;
+        }
+        return input.replace(";", "!");
+    }
+    
+    /**
      * Parse a CSV line into an ActivityEntry.
      * Format: ACTIVITY_TYPE;DESCRIPTION;STATUS;COMMENT;TIMESTAMP;TIME_SPENT
+     * Comments may contain newlines encoded as \\n
      */
     public static ActivityEntry fromCsv(String line) {
         if (line == null || line.trim().isBlank()) {
@@ -32,13 +44,18 @@ public record ActivityEntry(
         
         String[] parts = line.split(SEPARATOR, -1);
         
-        String activityType = parts.length > 0 ? parts[0] : "";
-        String description = parts.length > 1 ? parts[1] : "";
-        String status = parts.length > 2 ? parts[2] : "";
-        String comment = parts.length > 3 ? parts[3] : "";
+        String activityType = parts.length > 0 ? sanitizeInput(parts[0]) : "";
+        String description = parts.length > 1 ? sanitizeInput(parts[1]) : "";
+        String status = parts.length > 2 ? sanitizeInput(parts[2]) : "";
+        String comment = parts.length > 3 ? sanitizeInput(parts[3]) : "";
         String timestamp = parts.length > 4 ? parts[4] : "";
         Double timeSpent = parts.length > 5 && !parts[5].isBlank() 
                 ? Double.parseDouble(parts[5]) : 0.0;
+        
+        // Decode newlines in comment for display
+        if (comment != null) {
+            comment = comment.replace("\\n", "\n");
+        }
         
         return new ActivityEntry(
                 activityType, description, status, comment, timestamp, timeSpent
@@ -47,8 +64,14 @@ public record ActivityEntry(
     
     /**
      * Convert this entry to CSV line format.
+     * Newlines in comment are encoded as \\n.
      */
     public String toCsv() {
+        String comment = this.comment;
+        if (comment != null) {
+            comment = comment.replace("\n", "\\n");
+        }
+        
         return String.join(SEPARATOR, 
                 activityType, description, status, comment, timestamp, 
                 timeSpent != null ? String.valueOf(timeSpent) : "0.0");
