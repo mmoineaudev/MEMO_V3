@@ -22,6 +22,7 @@ Build a Swing-based GUI application for activity tracking with CSV storage, repl
 - CSV storage in configurable directory (default: ./log/)
 - Editable entries with persistent saves
 - Color-coded status display (TODO=yellow, DOING=blue, DONE=green, NOTE=gray)
+- Kanban view: grouped by description, shows non-DONE lines sorted by timestamp
 - History always visible (no pagination, performance not a concern)
 
 ## Cross-Reference Matrix
@@ -36,6 +37,7 @@ Build a Swing-based GUI application for activity tracking with CSV storage, repl
 | CSV storage config | UC-009, UC-010 |
 | Display all history | UC-011 |
 | Color-coded status | UC-014 |
+| Kanban view | UC-015, UC-016 |
 
 ---
 
@@ -666,6 +668,100 @@ Build a Swing-based GUI application for activity tracking with CSV storage, repl
 
 ---
 
+# Use Case: UC-015 Display Kanban View
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User views activities grouped by description in a Kanban-style board
+* Scope: Kanban board with columns for each unique description
+* Level: Functional requirement
+* Preconditions: All entries loaded from CSV files
+* Success End Condition: Kanban board displayed with columns for each description
+* Failed End Condition: Empty state if no non-DONE entries exist
+* Primary Actor: User
+* Trigger: User switches to Kanban view
+
+### MAIN SUCCESS SCENARIO
+
+1. User switches to Kanban view tab
+2. All entries loaded from all CSV files
+3. Entries filtered: only keep lines where status != DONE
+4. Entries grouped by description field
+5. For each description, create a column/card
+6. Entries within each column sorted by timestamp (oldest first)
+7. Columns displayed in grid layout (2x2 or flexible)
+8. Each column shows: description header, count, all entries in timestamp order
+
+### EXTENSIONS
+
+3a <step 3> <All entries DONE> : Show "All items completed" message
+
+4a <step 4> <Many unique descriptions> : Add scrollable area or pagination
+
+### SUB-VARIATIONS
+
+1 <list of sub-variations> : Can be separate tab, modal dialog, or side panel
+
+7 <list of sub-variations> : Can be 1 column per description, or grouped by status first
+
+### RELATED INFORMATION (optional)
+
+* Priority: High
+* Performance Target: <1s to render board with all descriptions
+* Frequency: Daily review
+
+---
+
+# Use Case: UC-016 Interact with Kanban Entries
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User can interact with entries in Kanban view
+* Scope: Click, edit, mark as done actions on Kanban cards
+* Level: Functional requirement
+* Preconditions: Kanban board displayed
+* Success End Condition: User actions reflected in data and UI
+* Failed End Condition: Invalid action rejected, no change
+* Primary Actor: User
+* Trigger: User clicks on Kanban card or action button
+
+### MAIN SUCCESS SCENARIO
+
+1. User clicks on entry card in Kanban column
+2. Entry details shown (full description, comment, timestamp, time)
+3. User can:
+   - Edit entry (opens UC-012 edit dialog)
+   - Mark as done (changes status to DONE, removes from Kanban)
+   - Copy description (for quick new entry)
+4. Changes persisted to CSV (UC-013)
+5. Kanban view updates immediately
+
+### EXTENSIONS
+
+3a <step 3> <User marks as done> : Entry removed from column on next render
+
+3b <step 3> <User edits status> : If changed to DONE, remove from Kanban
+
+4a <step 4> <Save fails> : Show error, keep original state
+
+### SUB-VARIATIONS
+
+3 <list of sub-variations> : Can drag-and-drop between descriptions
+
+### RELATED INFORMATION (optional)
+
+* Priority: High
+* Performance Target: Action response <200ms
+* Frequency: During daily review
+
+---
+
 ## Implementation Notes for Agents
 
 ### Project Structure
@@ -683,15 +779,18 @@ memo-v2/
 │       │           ├── service/
 │       │           │   ├── CsvStorageService.java
 │       │           │   ├── TimeCalculationService.java
-│       │           │   └── EntryEditorService.java
+│       │           │   ├── EntryEditorService.java
+│       │           │   └── KanbanDataService.java
 │       │           └── view/
 │       │               ├── MainFrame.java
 │       │               ├── EntryPanel.java
 │       │               ├── HistoryPanel.java
 │       │               ├── SearchPanel.java
+│       │               ├── KanbanPanel.java
 │       │               └── components/
 │       │                   ├── ColoredStatusLabel.java
-│       │                   └── EditableEntryCell.java
+│       │                   ├── EditableEntryCell.java
+│       │                   └── KanbanCard.java
 │       └── resources/
 │           └── config.properties
 ├── src/
@@ -704,9 +803,11 @@ memo-v2/
 │                   ├── service/
 │                   │   ├── CsvStorageServiceTest.java
 │                   │   ├── TimeCalculationServiceTest.java
-│                   │   └── EntryEditorServiceTest.java
+│                   │   ├── EntryEditorServiceTest.java
+│                   │   └── KanbanDataServiceTest.java
 │                   └── view/
-│                       └── MemoApplicationTest.java
+│                       ├── MainFrameTest.java
+│                       └── KanbanPanelTest.java
 └── log/ (storage directory, auto-created)
 ```
 
@@ -726,13 +827,16 @@ Example: `CAPGEMINI;DEV;Code review JIRA-1234;TODO;;25/03/2026 09:30;0.0`
 2. **CsvStorageService** - Read/write CSV files, directory management
 3. **TimeCalculationService** - Daily/weekly time sums, grouping
 4. **EntryEditorService** - Handle entry modifications, atomic file writes
-5. **MainFrame** - Main window with resizable panels
-6. **EntryPanel** - New entry form with history reuse
-7. **HistoryPanel** - Scrollable list of all entries
-8. **SearchPanel** - Search dialog with filters
-9. **ColoredStatusLabel** - Label component with dynamic color based on status
-10. **EditableEntryCell** - Swing cell editor for inline editing
-11. **MemoApplication** - Application entry point
+5. **KanbanDataService** - Filter non-DONE entries, group by description, sort by timestamp
+6. **MainFrame** - Main window with resizable panels and tabbed view
+7. **EntryPanel** - New entry form with history reuse
+8. **HistoryPanel** - Scrollable list of all entries
+9. **SearchPanel** - Search dialog with filters
+10. **KanbanPanel** - Kanban board with columns per description
+11. **ColoredStatusLabel** - Label component with dynamic color based on status
+12. **EditableEntryCell** - Swing cell editor for inline editing
+13. **KanbanCard** - Individual entry card component for Kanban view
+14. **MemoApplication** - Application entry point
 
 ### Maven Dependencies (Minimal)
 - Only Java standard library (no external deps)
@@ -750,6 +854,21 @@ Example: `CAPGEMINI;DEV;Code review JIRA-1234;TODO;;25/03/2026 09:30;0.0`
 - Option B: Dialog-based editing for complex entries
 - Option C: Double-click opens edit panel in place
 - Atomic file writes: write to temp file, then rename for safety
+
+### Kanban View Implementation
+- MainFrame uses JTabbedPane: History | Search | Kanban
+- KanbanDataService groups entries by description (excluding DONE status)
+- Each column shows unique description with entry count badge
+- Entries within column sorted by timestamp (oldest → newest)
+- KanbanCard: JPanel with timestamp, status, truncated description
+- Click on card: shows full details, edit, or mark-as-done actions
+- Mark as DONE: removes from Kanban immediately on next render
+- Grid layout: 2 columns by default, expandable with JScrollPane
+
+### View Switching
+- Tab-based navigation between History, Search, and Kanban views
+- Kanban view recalculates on entry save or status change
+- Cached Kanban data with invalidate-on-change pattern
 
 ### TDD Approach
 1. Start with model tests (ActivityEntry parsing)
