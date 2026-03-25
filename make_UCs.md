@@ -4,7 +4,7 @@ The user provided an input. The current task is to understand this input and the
 
 ## How to create the checklist ? 
 
-* In order to minimize efforts for achieving the user goal, you need to create a file called ```AGENTIC_RESOURCES/checklist.md``` that will contain a breakdown of tasks needed to achieve the user's goal describe in input.
+* In order to minimize efforts for achieving the user goal, you need to create a file called ```checklist.md``` that will contain a breakdown of tasks needed to achieve the user's goal describe in input.
 * The format of this task checklist is by use cases, they can be high level or very technical. Unneeded items depending on the task context are to be ignored. Format is : 
 
 ```
@@ -53,7 +53,7 @@ The user provided an input. The current task is to understand this input and the
 * Frequency: <how often it is expected to happen>
 ```
 
-* Stop when the entire input of the user is properly represented in ```AGENTIC_RESOURCES/checklist.md```
+* Stop when the entire input of the user is properly represented in ```checklist.md```
 * Success criteria of the creation of the checklist:
   * The produced checklist should be sufficient to create the entire solution expected by the user.
   * Each use case must have at least one concrete action item (implementation or test).
