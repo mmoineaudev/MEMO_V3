@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.memo</groupId>
-    <artifactId>memo-v2</artifactId>
+    <artifactId>memo-v3</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
