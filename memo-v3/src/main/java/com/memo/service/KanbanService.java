@@ -52,4 +52,26 @@ public class KanbanService {
                         e -> e.getValue().size()
                 ));
     }
+    
+    /**
+     * Get entries organized by status for kanban board.
+     */
+    public Map<String, List<ActivityEntry>> getKanbanBoard(List<ActivityEntry> entries) {
+        return entries.stream()
+                .sorted(Comparator.comparing(ActivityEntry::timestamp))
+                .collect(Collectors.groupingBy(
+                        ActivityEntry::status,
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
+    }
+    
+    /**
+     * Filter entries by status.
+     */
+    public List<ActivityEntry> getKanbanBoardByStatus(List<ActivityEntry> entries, String status) {
+        return entries.stream()
+                .filter(e -> status.equals(e.status()))
+                .collect(Collectors.toList());
+    }
 }

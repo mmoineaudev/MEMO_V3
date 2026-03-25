@@ -11,6 +11,13 @@ import java.util.stream.Collectors;
 public class SearchService {
     
     /**
+     * Search entries by query string.
+     */
+    public List<ActivityEntry> search(List<ActivityEntry> entries, String query) {
+        return search(entries, query, null, null);
+    }
+    
+    /**
      * Search entries by query string and filters.
      */
     public List<ActivityEntry> search(List<ActivityEntry> entries, String query, 

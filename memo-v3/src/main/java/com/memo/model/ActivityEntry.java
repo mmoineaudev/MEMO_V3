@@ -118,4 +118,25 @@ public record ActivityEntry(
     public int hashCode() {
         return Objects.hash(timestamp, activityType, description);
     }
+    
+    /**
+     * Create a new ActivityEntry with updated description.
+     */
+    public ActivityEntry withDescription(String description) {
+        return new ActivityEntry(this.activityType, description, this.status, this.comment, this.timestamp, this.timeSpent);
+    }
+    
+    /**
+     * Create a new ActivityEntry with updated status.
+     */
+    public ActivityEntry withStatus(String status) {
+        return new ActivityEntry(this.activityType, this.description, status, this.comment, this.timestamp, this.timeSpent);
+    }
+    
+    /**
+     * Create a new ActivityEntry with updated comment.
+     */
+    public ActivityEntry withComment(String comment) {
+        return new ActivityEntry(this.activityType, this.description, this.status, comment, this.timestamp, this.timeSpent);
+    }
 }
