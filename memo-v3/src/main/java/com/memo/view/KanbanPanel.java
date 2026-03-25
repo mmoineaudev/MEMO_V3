@@ -46,18 +46,25 @@ public class KanbanPanel extends JPanel {
     public void refreshKanban() {
         columnsPanel.removeAll();
         
-        Map<String, java.util.List<ActivityEntry>> grouped = kanbanService.getEntriesByDescription(
+        // Use getKanbanBoard() to group entries by status (TODO/DOING/DONE/NOTE)
+        Map<String, java.util.List<ActivityEntry>> grouped = kanbanService.getKanbanBoard(
                 historyService.getHistory()
         );
         
         if (grouped.isEmpty()) {
-            JLabel empty = new JLabel("All items completed. Great job!");
+            JLabel empty = new JLabel("No entries found.");
             empty.setFont(empty.getFont().deriveFont(16f));
             empty.setHorizontalAlignment(SwingConstants.CENTER);
             columnsPanel.add(empty);
         } else {
-            for (Map.Entry<String, java.util.List<ActivityEntry>> entry : grouped.entrySet()) {
-                createColumn(entry.getKey(), entry.getValue());
+            // Define column order for Kanban board
+            String[] columnOrder = {"TODO", "DOING", "DONE", "NOTE"};
+            
+            for (String status : columnOrder) {
+                java.util.List<ActivityEntry> entries = grouped.get(status);
+                if (entries != null && !entries.isEmpty()) {
+                    createColumn(status, entries);
+                }
             }
         }
         

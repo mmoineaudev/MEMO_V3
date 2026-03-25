@@ -71,7 +71,8 @@ public class HistoryPanel extends JPanel {
                 if (entryEditorService != null && e.getClickCount() == 2) {
                     int row = historyTable.rowAtPoint(e.getPoint());
                     if (row >= 0) {
-                        ActivityEntry entry = (ActivityEntry) historyTable.getValueAt(row, 0);
+                        // Entry object is stored at column index 6 (last column)
+                        ActivityEntry entry = (ActivityEntry) historyTable.getValueAt(row, 6);
                         showEditDialog(entry);
                     }
                 }

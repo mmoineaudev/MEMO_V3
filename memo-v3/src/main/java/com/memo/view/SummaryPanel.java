@@ -47,6 +47,20 @@ public class SummaryPanel extends JPanel {
         controls.add(weeklyRadio);
         controls.add(dailyRadio);
         
+        // Add listeners to radio buttons to update period selectors on selection change
+        weeklyRadio.addActionListener(e -> {
+            if (weeklyRadio.isSelected()) {
+                updatePeriodSelectors(true);
+                refreshSummary(true);
+            }
+        });
+        dailyRadio.addActionListener(e -> {
+            if (dailyRadio.isSelected()) {
+                updatePeriodSelectors(false);
+                refreshSummary(false);
+            }
+        });
+        
         weekCombo = new JComboBox<>();
         dateCombo = new JComboBox<>();
         

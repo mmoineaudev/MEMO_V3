@@ -114,12 +114,23 @@ Java Swing GUI application for activity tracking with CSV-based storage, impleme
 - [x] SummaryService tests
 - [x] KanbanService tests
 
-### Integration Tests (Complete - 7 tests)
+### Integration Tests (Complete - 18 tests)
 - [x] ActivityEntry CSV serialization
 - [x] Multi-line comment handling
 - [x] Semicolon sanitization
 - [x] CSV file read/write
 - [x] Storage directory creation
+- [x] Write and read all entries preserving data
+- [x] Handle multiple CSV files correctly
+- [x] Preserve multi-line comments through round-trip
+- [x] Handle empty comments
+- [x] Handle special characters in comments
+- [x] Complete workflow: create, save, reload, verify
+- [x] Entry update and delete workflow
+- [x] HistoryService loads from multiple files
+- [x] Safety: never write to user home directory
+- [x] Safety: fail safely on unwritable directory
+- [x] Safety: never modify files outside storage
 
 ## Clean Code Principles
 - [x] Single responsibility per class
