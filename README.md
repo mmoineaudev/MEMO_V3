@@ -1,4 +1,4 @@
-The file legacy/ActivityTracker.java is a working activity tracking CLI that I use everyday at work. Use it as a functional reference since it already has 80% of the need fulfilled. Ignore the french comments, ignore the jban librairy, this is not to be kept for next implementation. 
+The file legacy/ActivityTracker.java is a working activity tracking CLI that I use everyday at work. Use it as a functional reference since it already has 80% of the need fulfilled. Ignore the french comments, ignore the jbang/picocli librairies, this is not to be kept for next implementation. 
 
 It allows a fast activity logging that I use as a journal so I don't forget anything.
 It displays all previously created files at start, ordered by date DESC so that the user sees the last activities at first.
