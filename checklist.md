@@ -174,14 +174,14 @@ memo-v3/
 └── README.md
 ```
 
-## Next Steps
-1. Implement SettingsService for configuration
-2. Create MemoFrame as main window
-3. Implement HistoryPanel with resizable table
-4. Create EntryEditorDialog with auto-suggest
-5. Implement SearchPanel with time sum display
-6. Add SummaryPanel for daily/weekly views
-7. Add KanbanPanel for status-based view
-8. Wire up all components
-9. Add auto-suggest for last 10 descriptions
-10. Final UI polish and testing
+## Next Steps (Completed)
+[x] 1. Implement SettingsService for configuration
+[x] 2. Create MemoFrame as main window
+[x] 3. Implement HistoryPanel with resizable table
+[x] 4. Create EntryEditorDialog with auto-suggest
+[x] 5. Implement SearchPanel with time sum display
+[x] 6. Add SummaryPanel for daily/weekly views
+[x] 7. Add KanbanPanel for status-based view
+[x] 8. Wire up all components
+[x] 9. Add auto-suggest for last 10 descriptions
+[x] 10. Final UI polish and testing
