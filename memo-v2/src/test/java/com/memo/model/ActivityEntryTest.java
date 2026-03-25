@@ -74,6 +74,7 @@ class ActivityEntryTest {
         String line = ";;;;;";
         ActivityEntry entry = ActivityEntry.fromCsv(line);
         
+        // Empty fields should still create an entry (valid CSV format)
         assertNotNull(entry);
         assertTrue(entry.activityType().isEmpty());
         assertTrue(entry.description().isEmpty());

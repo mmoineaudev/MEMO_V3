@@ -1,4 +1,13 @@
-com/memo/model/ActivityEntryTest.class
+com/memo/service/EntryEditorServiceTest$UpdateEntry.class
+com/memo/service/EntryEditorServiceTest$HistoryReuse.class
+com/memo/service/EntryEditorServiceTest$CreateEntry.class
+com/memo/service/HistoryServiceTest.class
 com/memo/service/CsvStorageServiceTest$FileOperations.class
+com/memo/model/ActivityEntryTest.class
+com/memo/service/EntryEditorServiceTest$DeleteEntry.class
+com/memo/service/EntryEditorServiceTest$SaveEntry.class
+com/memo/service/EntryEditorServiceTest.class
+com/memo/service/HistoryServiceTest$HistoryManagement.class
+com/memo/service/HistoryServiceTest$LoadHistory.class
 com/memo/service/CsvStorageServiceTest$DirectoryCreation.class
 com/memo/service/CsvStorageServiceTest.class
