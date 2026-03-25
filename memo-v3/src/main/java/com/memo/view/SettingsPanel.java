@@ -18,6 +18,7 @@ public class SettingsPanel extends JPanel {
     private JTextField storageDirField;
     private JButton browseButton;
     private JButton resetButton;
+    private JButton applyButton;
     
     public SettingsPanel(SettingsService settingsService) {
         this.settingsService = settingsService;
@@ -59,9 +60,17 @@ public class SettingsPanel extends JPanel {
         resetButton.addActionListener(e -> resetToDefault());
         add(resetButton, gbc);
         
+        // Apply button
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 3;
+        applyButton = new JButton("Apply Settings");
+        applyButton.addActionListener(e -> applySettings());
+        add(applyButton, gbc);
+        
         // Info label
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 3;
         gbc.gridwidth = 4;
         gbc.weightx = 1.0;
         JLabel infoLabel = new JLabel(
@@ -91,7 +100,8 @@ public class SettingsPanel extends JPanel {
     }
     
     private void resetToDefault() {
-        storageDirField.setText("./log");
+        String defaultDir = System.getProperty("user.home") + File.separator + ".MEMO";
+        storageDirField.setText(defaultDir);
         settingsService.resetToDefault();
         resetButton.setEnabled(false);
     }

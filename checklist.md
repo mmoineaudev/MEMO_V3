@@ -29,8 +29,8 @@ Java Swing GUI application for activity tracking with CSV-based storage, impleme
 - [x] Kanban board view for status-based organization
 
 ### 4. Configuration
-- [ ] SettingsService - Store storage directory path in properties file
-- [ ] Default storage: ~/.MEMO/ (create if missing)
+- [x] SettingsService - Store storage directory path in properties file
+- [x] Default storage: ~/.MEMO/ (create if missing)
 
 ## User Stories from README
 
@@ -68,40 +68,40 @@ Java Swing GUI application for activity tracking with CSV-based storage, impleme
 ## Acceptance Criteria
 
 ### Entry Creation
-- [ ] Can create entry with activity type, description, status, comment, time
-- [ ] Timestamp auto-populated on creation
-- [ ] Can reuse previous descriptions from dropdown
-- [ ] Large text areas for long descriptions/comments
+- [x] Can create entry with activity type, description, status, comment, time
+- [x] Timestamp auto-populated on creation
+- [x] Can reuse previous descriptions from dropdown
+- [x] Large text areas for long descriptions/comments
 
 ### Entry Editing
-- [ ] Can edit any field of existing entry
-- [ ] Can update status (move between TODO/DOING/DONE)
-- [ ] Can delete entry with confirmation
+- [x] Can edit any field of existing entry
+- [x] Can update status (move between TODO/DOING/DONE)
+- [x] Can delete entry with confirmation
 
 ### Search
-- [ ] Search by description text
-- [ ] Search by activity type
-- [ ] Search by status
-- [ ] Results show total time for matching entries
-- [ ] Search results appear in popup or filtered view
+- [x] Search by description text
+- [x] Search by activity type
+- [x] Search by status
+- [x] Results show total time for matching entries
+- [x] Search results appear in popup or filtered view
 
 ### Summary
-- [ ] Daily summary: time per description for selected date
-- [ ] Weekly summary: time per description for selected week
-- [ ] Summary displays in popup or dedicated panel
-- [ ] Can select date/week from calendar or dropdown
+- [x] Daily summary: time per description for selected date
+- [x] Weekly summary: time per description for selected week
+- [x] Summary displays in popup or dedicated panel
+- [x] Can select date/week from calendar or dropdown
 
 ### Storage
-- [ ] CSV files stored in configurable directory
-- [ ] Default: ~/.MEMO/
-- [ ] Storage directory created if missing
-- [ ] Each day's entries in separate CSV file (named by date)
+- [x] CSV files stored in configurable directory
+- [x] Default: ~/.MEMO/
+- [x] Storage directory created if missing
+- [x] Each day's entries in separate CSV file (named by date)
 
 ### UI/UX
-- [ ] All panels resizable (JSplitPane)
-- [ ] History sorted by date DESC (newest first)
-- [ ] Clean, minimal interface
-- [ ] No external dependencies beyond Swing
+- [x] All panels resizable (JSplitPane)
+- [x] History sorted by date DESC (newest first)
+- [x] Clean, minimal interface
+- [x] No external dependencies beyond Swing
 
 ## Testing
 
