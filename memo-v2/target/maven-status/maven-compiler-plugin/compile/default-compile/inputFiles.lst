@@ -1,5 +1,10 @@
+/home/neo/Desktop/MEMO_V3/memo-v2/src/main/java/com/memo/view/MainFrame.java
 /home/neo/Desktop/MEMO_V3/memo-v2/src/main/java/com/memo/service/EntryEditorService.java
+/home/neo/Desktop/MEMO_V3/memo-v2/src/main/java/com/memo/MemoApplication.java
 /home/neo/Desktop/MEMO_V3/memo-v2/src/main/java/com/memo/service/HistoryService.java
 /home/neo/Desktop/MEMO_V3/memo-v2/src/main/java/com/memo/model/ActivityEntry.java
 /home/neo/Desktop/MEMO_V3/memo-v2/src/main/java/com/memo/service/CsvStorageService.java
+/home/neo/Desktop/MEMO_V3/memo-v2/src/main/java/com/memo/view/EntryPanel.java
+/home/neo/Desktop/MEMO_V3/memo-v2/src/main/java/com/memo/view/HistoryPanel.java
+/home/neo/Desktop/MEMO_V3/memo-v2/src/main/java/com/memo/view/components/ColoredStatusLabel.java
 /home/neo/Desktop/MEMO_V3/memo-v2/src/main/java/com/memo/service/TimeCalculationService.java

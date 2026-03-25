@@ -1,5 +1,12 @@
 com/memo/service/TimeCalculationService.class
+com/memo/view/EntryPanel.class
+com/memo/MemoApplication.class
+com/memo/view/components/ColoredStatusLabel.class
 com/memo/service/CsvStorageService.class
-com/memo/model/ActivityEntry.class
+com/memo/view/HistoryPanel$1.class
 com/memo/service/EntryEditorService.class
+com/memo/view/HistoryPanel.class
+com/memo/model/ActivityEntry.class
+com/memo/view/HistoryPanel$ColoredStatusRenderer.class
+com/memo/view/MainFrame.class
 com/memo/service/HistoryService.class

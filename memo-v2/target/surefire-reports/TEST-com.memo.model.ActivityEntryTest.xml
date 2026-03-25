@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-21-openjdk-amd64/lib"/>
-    <property name="sun.java.command" value="/home/neo/Desktop/MEMO_V3/memo-v2/target/surefire/surefirebooter-20260325092713440_3.jar /home/neo/Desktop/MEMO_V3/memo-v2/target/surefire 2026-03-25T09-27-13_413-jvmRun1 surefire-20260325092713440_1tmp surefire_0-20260325092713440_2tmp"/>
+    <property name="sun.java.command" value="/home/neo/Desktop/MEMO_V3/memo-v2/target/surefire/surefirebooter-20260325092957960_3.jar /home/neo/Desktop/MEMO_V3/memo-v2/target/surefire 2026-03-25T09-29-57_933-jvmRun1 surefire-20260325092957960_1tmp surefire_0-20260325092957960_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/home/neo/Desktop/MEMO_V3/memo-v2/target/test-classes:/home/neo/Desktop/MEMO_V3/memo-v2/target/classes:/home/neo/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.0/junit-jupiter-5.10.0.jar:/home/neo/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.0/junit-jupiter-api-5.10.0.jar:/home/neo/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/home/neo/.m2/repository/org/junit/platform/junit-platform-commons/1.10.0/junit-platform-commons-1.10.0.jar:/home/neo/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.0/junit-jupiter-engine-5.10.0.jar:/home/neo/.m2/repository/org/junit/platform/junit-platform-engine/1.10.0/junit-platform-engine-1.10.0.jar:/home/neo/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.0/junit-jupiter-params-5.10.0.jar:/home/neo/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/neo/.m2/repository/org/mockito/mockito-core/5.6.0/mockito-core-5.6.0.jar:/home/neo/.m2/repository/net/bytebuddy/byte-buddy/1.14.8/byte-buddy-1.14.8.jar:/home/neo/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.8/byte-buddy-agent-1.14.8.jar:/home/neo/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -28,7 +28,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="surefire.real.class.path" value="/home/neo/Desktop/MEMO_V3/memo-v2/target/surefire/surefirebooter-20260325092713440_3.jar"/>
+    <property name="surefire.real.class.path" value="/home/neo/Desktop/MEMO_V3/memo-v2/target/surefire/surefirebooter-20260325092957960_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.10+7-Ubuntu-124.04"/>
     <property name="user.name" value="neo"/>
@@ -57,10 +57,10 @@
   <testcase name="shouldParseValidCsvLineWithAllFields" classname="com.memo.model.ActivityEntryTest" time="0.01"/>
   <testcase name="shouldCreateCopyWithUpdatedFields" classname="com.memo.model.ActivityEntryTest" time="0.005"/>
   <testcase name="shouldEqualSameTimestampAndType" classname="com.memo.model.ActivityEntryTest" time="0.001"/>
-  <testcase name="shouldConvertToCsv" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
-  <testcase name="shouldParseCsvLineWithNoteStatusAndNoTime" classname="com.memo.model.ActivityEntryTest" time="0.001"/>
-  <testcase name="shouldCreateNewEntryWithCurrentTimestamp" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
-  <testcase name="shouldParseCsvLineWithCeremonyActivity" classname="com.memo.model.ActivityEntryTest" time="0.001"/>
+  <testcase name="shouldConvertToCsv" classname="com.memo.model.ActivityEntryTest" time="0.001"/>
+  <testcase name="shouldParseCsvLineWithNoteStatusAndNoTime" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="shouldCreateNewEntryWithCurrentTimestamp" classname="com.memo.model.ActivityEntryTest" time="0.001"/>
+  <testcase name="shouldParseCsvLineWithCeremonyActivity" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
   <testcase name="shouldParseCsvLineWithDoneStatus" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
   <testcase name="shouldHandleEmptyFields" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
   <testcase name="shouldReturnNullForBlankLine" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
