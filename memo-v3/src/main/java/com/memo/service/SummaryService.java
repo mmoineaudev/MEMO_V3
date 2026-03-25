@@ -3,6 +3,7 @@ package com.memo.service;
 import com.memo.model.ActivityEntry;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,11 +40,11 @@ public class SummaryService {
      * Get all dates with entries, sorted newest first.
      */
     public List<LocalDate> getDatesWithEntries(List<ActivityEntry> entries) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return entries.stream()
                 .map(e -> {
                     try {
-                        return LocalDate.parse(e.timestamp().split(" ")[0],
-                                java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        return LocalDate.parse(e.timestamp().split(" ")[0], formatter);
                     } catch (Exception ex) {
                         return null;
                     }
@@ -58,12 +59,12 @@ public class SummaryService {
      * Get all week keys with entries, sorted newest first.
      */
     public List<String> getWeeksWithEntries(List<ActivityEntry> entries) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         return entries.stream()
                 .map(e -> {
                     try {
                         java.time.LocalDateTime dt = java.time.LocalDateTime.parse(
-                                e.timestamp(),
-                                java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+                                e.timestamp(), formatter);
                         int year = dt.getYear();
                         int weekNum = (dt.getDayOfYear() - 1) / 7 + 1;
                         return year + "-W" + String.format("%02d", weekNum);

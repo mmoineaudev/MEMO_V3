@@ -11,7 +11,7 @@ import java.awt.*;
  */
 public class MainFrame extends JFrame {
     
-    private JTabbedPane tabbedPane;
+     private JTabbedPane tabbedPane;
     private EntryPanel entryPanel;
     private HistoryPanel historyPanel;
     private SearchPanel searchPanel;
@@ -36,7 +36,8 @@ public class MainFrame extends JFrame {
         
         tabbedPane = new JTabbedPane();
         
-        entryPanel = new EntryPanel(entryEditorService, historyService);
+        // Pass callback for history refresh
+        entryPanel = new EntryPanel(entryEditorService, historyService, this::refreshAll);
         historyPanel = new HistoryPanel(historyService, entryEditorService);
         searchPanel = new SearchPanel(new SearchService(), historyService);
         summaryPanel = new SummaryPanel(new SummaryService(), historyService);
@@ -53,6 +54,15 @@ public class MainFrame extends JFrame {
         add(tabbedPane, BorderLayout.CENTER);
         setMinimumSize(new Dimension(800, 500));
         setVisible(true);
+    }
+    
+    /**
+     * Refresh all panels after data changes.
+     */
+    public void refreshAll() {
+        historyPanel.refreshHistory();
+        summaryPanel.refreshSummary();
+        kanbanPanel.refreshKanban();
     }
     
     public void refreshHistory() {

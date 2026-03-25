@@ -113,4 +113,13 @@ public class SummaryPanel extends JPanel {
             summaryArea.setText(summaryService.formatSummary(summary));
         }
     }
+    
+    /**
+     * Refresh summary using current view selection.
+     */
+    public void refreshSummary() {
+        // Determine which view is selected by checking which combo is enabled
+        boolean weekly = weekCombo.isEnabled();
+        refreshSummary(weekly);
+    }
 }

@@ -7,6 +7,7 @@ import com.memo.service.HistoryService;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.function.*;
 
 /**
  * Panel for creating new activity entries.
@@ -14,8 +15,9 @@ import java.util.List;
  */
 public class EntryPanel extends JPanel {
     
-    private EntryEditorService entryEditorService;
-    private HistoryService historyService;
+    private final EntryEditorService entryEditorService;
+    private final HistoryService historyService;
+    private final Runnable refreshCallback;
     
     private JComboBox<String> activityTypeCombo;
     private JComboBox<String> descriptionCombo;
@@ -28,11 +30,12 @@ public class EntryPanel extends JPanel {
     private static final String[] STATUSES = {"TODO", "DOING", "DONE", "NOTE"};
     
     /**
-     * Create an entry panel with the given services.
+     * Create an entry panel with the given services and refresh callback.
      */
-    public EntryPanel(EntryEditorService entryEditorService, HistoryService historyService) {
+    public EntryPanel(EntryEditorService entryEditorService, HistoryService historyService, Runnable refreshCallback) {
         this.entryEditorService = entryEditorService;
         this.historyService = historyService;
+        this.refreshCallback = refreshCallback;
         initComponents();
     }
     
@@ -120,6 +123,11 @@ public class EntryPanel extends JPanel {
                 // Clear comment area, keep other fields
                 commentArea.setText("");
                 updateHistoryReuse();
+                
+                // Refresh all panels to show the new entry
+                if (refreshCallback != null) {
+                    refreshCallback.run();
+                }
             } else {
                 showError("Failed to save entry");
             }
