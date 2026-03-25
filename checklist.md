@@ -30,7 +30,7 @@ Java Swing GUI application for activity tracking with CSV-based storage, impleme
 
 ### 4. Configuration
 - [x] SettingsService - Store storage directory path in properties file
-- [x] Default storage: ~/.MEMO/ (create if missing)
+- [x] Default storage: ./log (create if missing)
 
 ## User Stories from README
 
@@ -93,7 +93,7 @@ Java Swing GUI application for activity tracking with CSV-based storage, impleme
 
 ### Storage
 - [x] CSV files stored in configurable directory
-- [x] Default: ~/.MEMO/
+- [x] Default: ./log
 - [x] Storage directory created if missing
 - [x] Each day's entries in separate CSV file (named by date)
 

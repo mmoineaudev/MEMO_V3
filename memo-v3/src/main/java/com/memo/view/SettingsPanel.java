@@ -100,8 +100,7 @@ public class SettingsPanel extends JPanel {
     }
     
     private void resetToDefault() {
-        String defaultDir = System.getProperty("user.home") + File.separator + ".MEMO";
-        storageDirField.setText(defaultDir);
+        storageDirField.setText("./log");
         settingsService.resetToDefault();
         resetButton.setEnabled(false);
     }

@@ -2,8 +2,7 @@ package com.memo.service;
 
 import org.junit.jupiter.api.*;
 
- import java.io.File;
-import java.io.IOException;
+ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -54,8 +53,7 @@ class SettingsServiceTest {
         void shouldReturnDefaultStorageDirectory() {
             String dir = settingsService.getStorageDirectory();
             
-            String expected = System.getProperty("user.home") + File.separator + ".MEMO";
-            assertEquals(expected, dir);
+            assertEquals("./log", dir);
         }
         
         @Test
@@ -92,8 +90,7 @@ class SettingsServiceTest {
             settingsService.setStorageDirectory("/custom");
             settingsService.resetToDefault();
             
-            String expected = System.getProperty("user.home") + File.separator + ".MEMO";
-            assertEquals(expected, settingsService.getStorageDirectory());
+            assertEquals("./log", settingsService.getStorageDirectory());
             assertFalse(settingsService.isCustomStorageConfigured());
         }
     }

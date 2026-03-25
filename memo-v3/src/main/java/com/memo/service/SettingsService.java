@@ -12,7 +12,7 @@ public class SettingsService {
     
     private static final String SETTINGS_FILE = "settings.properties";
     private static final String KEY_STORAGE_DIR = "storage.directory";
-    private static final String DEFAULT_STORAGE_DIR = System.getProperty("user.home") + File.separator + ".MEMO";
+    private static final String DEFAULT_STORAGE_DIR = "./log";
     
     private final Properties properties;
     
