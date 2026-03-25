@@ -8,7 +8,9 @@ Build a Swing-based GUI application for activity tracking with CSV storage, repl
 - Clean Code principles: small methods, meaningful names, single responsibility
 - Strict TDD: write tests first, green/red/refactor cycle
 - Resizable components using layout managers (GridBagLayout or SpringLayout)
-- CSV storage in configurable directory (default: ~/.MEMO/)
+- CSV storage in configurable directory (default: ./log/)
+- Editable entries with persistent disk saves
+- Color-coded status display (TODO=yellow, DOING=blue, DONE=green, NOTE=gray)
 - Follow existing data model from legacy ActivityTracker.java
 - Commits after each change with descriptive messages
 
@@ -17,7 +19,9 @@ Build a Swing-based GUI application for activity tracking with CSV storage, repl
 - Activity entry with large text areas and history reuse (last 10 distinct descriptions)
 - Search functionality across all CSV columns
 - Daily and weekly time sums per activity description
-- CSV file storage with auto-creation of storage directory
+- CSV storage in configurable directory (default: ./log/)
+- Editable entries with persistent saves
+- Color-coded status display (TODO=yellow, DOING=blue, DONE=green, NOTE=gray)
 - History always visible (no pagination, performance not a concern)
 
 ## Cross-Reference Matrix
@@ -25,11 +29,13 @@ Build a Swing-based GUI application for activity tracking with CSV storage, repl
 |--------------|-----------|
 | New entry edition | UC-001, UC-002 |
 | History reuse | UC-001 |
+| Editable entries | UC-012, UC-013 |
 | Search functionality | UC-003, UC-004 |
 | Time sums (daily/weekly) | UC-005, UC-006, UC-007 |
 | Resizable components | UC-008 |
 | CSV storage config | UC-009, UC-010 |
 | Display all history | UC-011 |
+| Color-coded status | UC-014 |
 
 ---
 
@@ -405,12 +411,17 @@ Build a Swing-based GUI application for activity tracking with CSV storage, repl
 5. Application creates directory if it doesn't exist
 6. Setting saved and applied immediately
 7. All future CSV files use new storage directory
+8. Existing entries remain accessible from old location
 
 ### EXTENSIONS
 
-3a <step 3> <Invalid path> : Show error, require valid path
+3a <step 3> <Empty path> : Use default ./log/ directory
 
-4a <step 4> <Path not writable> : Show error, require different path
+3b <step 3> <Relative path> : Resolve relative to application root
+
+3c <step 3> <Absolute path> : Use path as-is
+
+4a <step 4> <Invalid path> : Show error, require valid path
 
 5a <step 5> <Directory creation fails> : Show error, require different path
 
@@ -445,7 +456,7 @@ Build a Swing-based GUI application for activity tracking with CSV storage, repl
 ### MAIN SUCCESS SCENARIO
 
 1. Application starts
-2. Storage path resolved (config or default ~/.MEMO/)
+2. Storage path resolved (config or default ./log/)
 3. Application checks if directory exists
 4. If not exists, create directory with parent directories
 5. Verify directory is writable
@@ -515,6 +526,146 @@ Build a Swing-based GUI application for activity tracking with CSV storage, repl
 
 ---
 
+# Use Case: UC-012 Edit Activity Entry
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: User modifies an existing activity entry
+* Scope: Inline editing or dialog-based editing
+* Level: Functional requirement
+* Preconditions: Entry visible in history view
+* Success End Condition: Modified entry saved to CSV, persisted to disk
+* Failed End Condition: Invalid modification rejected, no file change
+* Primary Actor: User
+* Trigger: User double-clicks entry or selects edit option
+
+### MAIN SUCCESS SCENARIO
+
+1. User initiates edit on selected entry
+2. Current values displayed in editable form
+3. User modifies any field (activity type, description, status, comment, time)
+4. User confirms changes
+5. Entry updated in memory
+6. CSV file rewritten with updated entry
+7. History view refreshes to show modification
+8. Timestamp of modification tracked (optional column)
+
+### EXTENSIONS
+
+2a <step 2> <Entry locked> : Show error, entry currently being edited by another instance
+
+4a <step 4> <User cancels> : Discard changes, return to history view
+
+5a <step 5> <Validation error> : Show specific field error, require correction
+
+### SUB-VARIATIONS
+
+1 <list of sub-variations> : Can double-click entry, right-click menu, or keyboard shortcut (Ctrl+E)
+
+4 <list of sub-variations> : Can also use Escape key to cancel
+
+### RELATED INFORMATION (optional)
+
+* Priority: High
+* Performance Target: <200ms for save operation
+* Frequency: Several times per day
+
+---
+
+# Use Case: UC-013 Persist Entry Edits to Disk
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: Modified entries written back to CSV file permanently
+* Scope: CSV file rewrite with atomic save
+* Level: Technical requirement
+* Preconditions: Entry modified in memory
+* Success End Condition: CSV file on disk contains updated entry
+* Failed End Condition: Error shown, original file unchanged
+* Primary Actor: Application
+* Trigger: User confirms edit changes
+
+### MAIN SUCCESS SCENARIO
+
+1. Entry modification confirmed by user
+2. Application reads entire CSV file into memory
+3. Modified entry replaces original in memory
+4. Temporary file created with new content
+5. Atomic rename: temp file becomes original file
+6. Temporary file deleted if rename fails
+7. Confirmation shown to user
+
+### EXTENSIONS
+
+2a <step 2> <File read error> : Show error, abort save
+
+4a <step 4> <Temp file creation fails> : Show error, abort save
+
+5a <step 5> <Rename fails> : Restore original file, show error
+
+### SUB-VARIATIONS
+
+7 <list of sub-variations> : Can auto-save on every change (user preference)
+
+### RELATED INFORMATION (optional)
+
+* Priority: Critical
+* Performance Target: <500ms for complete save
+* Frequency: On each edit confirmation
+
+---
+
+# Use Case: UC-014 Display Status with Color Coding
+
+* [ ] implementation
+* [ ] test 
+
+## CHARACTERISTIC INFORMATION
+
+* Goal in Context: Status field displayed with appropriate color for quick visual identification
+* Scope: Text rendering with color based on status value
+* Level: Technical requirement
+* Preconditions: Entry displayed in history or search results
+* Success End Condition: Status text rendered in correct color
+* Failed End Condition: Default color used if status unknown
+* Primary Actor: Application
+* Trigger: Entry display rendering
+
+### MAIN SUCCESS SCENARIO
+
+1. Entry to be displayed retrieved
+2. Status field value extracted
+3. Color mapped based on status:
+   - TODO: Yellow/Gold
+   - DOING: Blue
+   - DONE: Green
+   - NOTE: Gray
+   - Unknown: Default (white)
+4. Status text rendered with color in UI
+5. Color persists on scroll and resize
+
+### EXTENSIONS
+
+3a <step 3> <Custom status values> : Allow user-defined status colors in settings
+
+### SUB-VARIATIONS
+
+1 <list of sub-variations> : Can also color-code activity type or entire row
+
+### RELATED INFORMATION (optional)
+
+* Priority: Medium
+* Performance Target: Color rendering <10ms per entry
+* Frequency: On every display refresh
+
+---
+
 ## Implementation Notes for Agents
 
 ### Project Structure
@@ -531,12 +682,16 @@ memo-v2/
 │       │           │   └── ActivityEntry.java
 │       │           ├── service/
 │       │           │   ├── CsvStorageService.java
-│       │           │   └── TimeCalculationService.java
+│       │           │   ├── TimeCalculationService.java
+│       │           │   └── EntryEditorService.java
 │       │           └── view/
 │       │               ├── MainFrame.java
 │       │               ├── EntryPanel.java
 │       │               ├── HistoryPanel.java
-│       │               └── SearchPanel.java
+│       │               ├── SearchPanel.java
+│       │               └── components/
+│       │                   ├── ColoredStatusLabel.java
+│       │                   └── EditableEntryCell.java
 │       └── resources/
 │           └── config.properties
 ├── src/
@@ -548,7 +703,8 @@ memo-v2/
 │                   │   └── ActivityEntryTest.java
 │                   ├── service/
 │                   │   ├── CsvStorageServiceTest.java
-│                   │   └── TimeCalculationServiceTest.java
+│                   │   ├── TimeCalculationServiceTest.java
+│                   │   └── EntryEditorServiceTest.java
 │                   └── view/
 │                       └── MemoApplicationTest.java
 └── log/ (storage directory, auto-created)
@@ -559,15 +715,24 @@ CSV Format: `PROJECT;ACTIVITY_TYPE;DESCRIPTION;STATUS;COMMENT;TIMESTAMP;TIME_SPE
 
 Example: `CAPGEMINI;DEV;Code review JIRA-1234;TODO;;25/03/2026 09:30;0.0`
 
+### Status Color Mapping
+- TODO: `new JLabel("<html><font color='#FFD700'>TODO</font></html>")` (Gold/Yellow)
+- DOING: `new JLabel("<html><font color='#1E90FF'>DOING</font></html>")` (Blue)
+- DONE: `new JLabel("<html><font color='#32CD32'>DONE</font></html>")` (Green)
+- NOTE: `new JLabel("<html><font color='#808080'>NOTE</font></html>")` (Gray)
+
 ### Key Classes to Implement
 1. **ActivityEntry** - Record/class for activity data (immutable)
 2. **CsvStorageService** - Read/write CSV files, directory management
 3. **TimeCalculationService** - Daily/weekly time sums, grouping
-4. **MainFrame** - Main window with resizable panels
-5. **EntryPanel** - New entry form with history reuse
-6. **HistoryPanel** - Scrollable list of all entries
-7. **SearchPanel** - Search dialog with filters
-8. **MemoApplication** - Application entry point
+4. **EntryEditorService** - Handle entry modifications, atomic file writes
+5. **MainFrame** - Main window with resizable panels
+6. **EntryPanel** - New entry form with history reuse
+7. **HistoryPanel** - Scrollable list of all entries
+8. **SearchPanel** - Search dialog with filters
+9. **ColoredStatusLabel** - Label component with dynamic color based on status
+10. **EditableEntryCell** - Swing cell editor for inline editing
+11. **MemoApplication** - Application entry point
 
 ### Maven Dependencies (Minimal)
 - Only Java standard library (no external deps)
@@ -578,12 +743,20 @@ Example: `CAPGEMINI;DEV;Code review JIRA-1234;TODO;;25/03/2026 09:30;0.0`
 - Use JSplitPane for vertical/horizontal dividers
 - Use JScrollPane for all content panels
 - Set minimum sizes for readability
+- Use JTable with custom renderer for colored status display
+
+### Editable Entries Implementation
+- Option A: JTable with DefaultCellEditor for inline editing
+- Option B: Dialog-based editing for complex entries
+- Option C: Double-click opens edit panel in place
+- Atomic file writes: write to temp file, then rename for safety
 
 ### TDD Approach
 1. Start with model tests (ActivityEntry parsing)
 2. Service tests (CSV I/O, time calculations)
-3. UI tests (swing tester or headless tests)
-4. Integration tests (full workflow)
+3. Editor service tests (edit, validate, atomic save)
+4. UI tests (swing tester or headless tests)
+5. Integration tests (full workflow)
 
 ### Commit Pattern
 - Commit after each use case complete
