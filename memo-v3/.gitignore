@@ -19,8 +19,10 @@ logs/
 
 # CSV data files
 *.csv
-!pom.xml
 
 # Maven
 .mvn/
 mvnw
+
+# Settings
+settings.properties
