@@ -23,8 +23,12 @@ public class MemoApplication {
                 System.out.println("Could not set look and feel: " + e.getMessage());
             }
             
-            // Initialize services
-            CsvStorageService csvStorage = new CsvStorageService();
+            // Initialize settings service
+            SettingsService settingsService = new SettingsService();
+            
+            // Initialize storage with configured directory
+            String storageDir = settingsService.getStorageDirectory();
+            CsvStorageService csvStorage = new CsvStorageService(storageDir);
             
             // Ensure storage directory exists (UC-010)
             if (!csvStorage.ensureDirectoryExists()) {
@@ -42,7 +46,7 @@ public class MemoApplication {
             historyService.loadAllHistory();
             
             // Create and show main frame
-            MainFrame mainFrame = new MainFrame(entryEditorService, historyService);
+            MainFrame mainFrame = new MainFrame(entryEditorService, historyService, settingsService);
             
             // Reload history after loading from disk
             mainFrame.refreshHistory();
