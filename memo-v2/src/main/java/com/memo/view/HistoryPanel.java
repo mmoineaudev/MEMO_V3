@@ -1,6 +1,7 @@
 package com.memo.view;
 
 import com.memo.model.ActivityEntry;
+import com.memo.service.EntryEditorService;
 import com.memo.service.HistoryService;
 import com.memo.view.components.ColoredStatusLabel;
 
@@ -23,9 +24,19 @@ public class HistoryPanel extends JPanel {
      * Create a history panel with the given history service.
      */
     public HistoryPanel(HistoryService historyService) {
+        this(historyService, null);
+    }
+    
+    /**
+     * Create a history panel with history service and entry editor for editing.
+     */
+    public HistoryPanel(HistoryService historyService, EntryEditorService entryEditorService) {
         this.historyService = historyService;
+        this.entryEditorService = entryEditorService;
         initComponents();
     }
+    
+    private EntryEditorService entryEditorService;
     
     /**
      * Initialize UI components.
@@ -54,6 +65,19 @@ public class HistoryPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(historyTable);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         
+        // Double-click to edit
+        historyTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (entryEditorService != null && e.getClickCount() == 2) {
+                    int row = historyTable.rowAtPoint(e.getPoint());
+                    if (row >= 0) {
+                        ActivityEntry entry = (ActivityEntry) tableModel.getValueAt(row, 6);
+                        showEditDialog(entry);
+                    }
+                }
+            }
+        });
+        
         add(scrollPane, BorderLayout.CENTER);
         
         // Refresh history
@@ -75,9 +99,26 @@ public class HistoryPanel extends JPanel {
                     entry.status(),
                     entry.comment(),
                     entry.timestamp(),
-                    String.format("%.2f", entry.timeSpent())
+                    String.format("%.2f", entry.timeSpent()),
+                    entry  // Store entry object for editing
             };
             tableModel.addRow(row);
+        }
+    }
+    
+    /**
+     * Show edit dialog for an entry.
+     */
+    private void showEditDialog(ActivityEntry entry) {
+        EditEntryDialog dialog = new EditEntryDialog(
+                (Frame) SwingUtilities.getWindowAncestor(this),
+                entry,
+                entryEditorService
+        );
+        dialog.setVisible(true);
+        
+        if (dialog.getEditedEntry() != null) {
+            refreshHistory();
         }
     }
     

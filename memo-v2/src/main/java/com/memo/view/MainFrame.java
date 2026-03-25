@@ -7,56 +7,48 @@ import java.awt.*;
 
 /**
  * Main application frame.
- * UC-008: Resize application components using GridBagLayout
+ * UC-008: Resize application components
  */
 public class MainFrame extends JFrame {
     
     private JTabbedPane tabbedPane;
     private EntryPanel entryPanel;
     private HistoryPanel historyPanel;
+    private SearchPanel searchPanel;
+    private SummaryPanel summaryPanel;
+    private KanbanPanel kanbanPanel;
     
-    /**
-     * Create the main frame with the given services.
-     */
     public MainFrame(EntryEditorService entryEditorService, HistoryService historyService) {
         initComponents(entryEditorService, historyService);
     }
     
-    /**
-     * Initialize UI components.
-     */
     private void initComponents(EntryEditorService entryEditorService, HistoryService historyService) {
         setTitle("MEMO_V2 - Activity Tracker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 600);
+        setSize(1000, 700);
         setLocationByPlatform(true);
         
-        // Create layout with GridBagLayout for resizable components
         setLayout(new BorderLayout());
         
-        // Create tabbed pane
         tabbedPane = new JTabbedPane();
-        
-        // Create panels
+     // Create panels
         entryPanel = new EntryPanel(entryEditorService, historyService);
-        historyPanel = new HistoryPanel(historyService);
+        historyPanel = new HistoryPanel(historyService, entryEditorService);
+        searchPanel = new SearchPanel(new SearchService(), historyService);
+        summaryPanel = new SummaryPanel(new SummaryService(), historyService);
+        kanbanPanel = new KanbanPanel(new KanbanService(), historyService);
         
         tabbedPane.addTab("New Entry", entryPanel);
         tabbedPane.addTab("History", historyPanel);
+        tabbedPane.addTab("Search", searchPanel);
+        tabbedPane.addTab("Summary", summaryPanel);
+        tabbedPane.addTab("Kanban", kanbanPanel);
         
-        // Add to frame
         add(tabbedPane, BorderLayout.CENTER);
-        
-        // Set minimum size for better UX
-        setMinimumSize(new Dimension(700, 500));
-        
-        // Show frame
+        setMinimumSize(new Dimension(800, 500));
         setVisible(true);
     }
     
-    /**
-     * Refresh the history view.
-     */
     public void refreshHistory() {
         historyPanel.refreshHistory();
     }
