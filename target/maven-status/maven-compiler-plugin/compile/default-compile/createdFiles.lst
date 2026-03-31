@@ -3,6 +3,7 @@ com/memo/service/CsvStorageService.class
 com/memo/service/SummaryService.class
 com/memo/service/KanbanService.class
 com/memo/service/EntryEditorService.class
+com/memo/service/SettingsService.class
 com/memo/service/SearchService.class
 com/memo/service/KanbanService$KanbanBoard.class
 com/memo/service/SummaryService$DetailedSummary.class
