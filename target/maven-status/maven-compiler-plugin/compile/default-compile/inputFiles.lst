@@ -2,5 +2,6 @@
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/model/ActivityEntry.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/CsvStorageService.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/SummaryService.java
+/home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/KanbanService.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/HistoryService.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/SearchService.java
