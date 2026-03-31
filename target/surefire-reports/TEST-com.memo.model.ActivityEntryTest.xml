@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.memo.service.SettingsServiceTest" time="0.017" tests="15" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.memo.model.ActivityEntryTest" time="0.003" tests="14" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -54,19 +54,18 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testClearAllSettings" classname="com.memo.service.SettingsServiceTest" time="0.008"/>
-  <testcase name="testGetSettingWithCustomDefaultValue" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testGetSettingAsBooleanFalse" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testLoadSettingsFromNonExistentFileUsesDefaults" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testGetAllSettings" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testGetAllSettingsEmpty" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testGetSettingAsIntegerWithInvalidValueReturnsDefault" classname="com.memo.service.SettingsServiceTest" time="0.001"/>
-  <testcase name="testGetSettingAsInteger" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testSetAndGetSetting" classname="com.memo.service.SettingsServiceTest" time="0.001"/>
-  <testcase name="testGetSettingAsBooleanWithInvalidValueReturnsDefault" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testRemoveSetting" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testPersistSettingsToFile" classname="com.memo.service.SettingsServiceTest" time="0.002"/>
-  <testcase name="testLoadSettingsFromFile" classname="com.memo.service.SettingsServiceTest" time="0.001"/>
-  <testcase name="testGetSettingReturnsDefaultValueWhenNotSet" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testGetSettingAsBooleanTrue" classname="com.memo.service.SettingsServiceTest" time="0.001"/>
+  <testcase name="testLargeTimeSpent" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testActivityEntryWithAutoTimestamp" classname="com.memo.model.ActivityEntryTest" time="0.001"/>
+  <testcase name="testMultilineComment" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testDescriptionReuse" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testGetFormattedTimestamp" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testDescriptionBlanks" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testTimeSpentValidation" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testActivityTypeBlanks" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testActivityEntryWithExplicitTimestamp" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testNullFields" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testIsValid" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testEmptyComment" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testAllStatusValues" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
+  <testcase name="testCommentWithSpecialCharacters" classname="com.memo.model.ActivityEntryTest" time="0.0"/>
 </testsuite>

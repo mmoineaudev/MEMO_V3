@@ -203,4 +203,25 @@ public class SearchService {
                 .filter(entry -> entry.comment().toLowerCase().contains(lowerSearch))
                 .collect(Collectors.toList());
     }
+    
+    /**
+     * Returns all entries from history.
+     * 
+     * @return List of all entries
+     */
+    public List<ActivityEntry> getAllEntries() {
+        return historyService.getAll();
+    }
+    
+    /**
+     * Returns entries filtered by status.
+     * 
+     * @param status The status to filter by
+     * @return List of entries with matching status
+     */
+    public List<ActivityEntry> getEntriesByStatus(String status) {
+        return historyService.getAll().stream()
+                .filter(entry -> entry.status().equals(status))
+                .toList();
+    }
 }

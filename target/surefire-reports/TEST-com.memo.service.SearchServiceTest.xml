@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.memo.service.SettingsServiceTest" time="0.017" tests="15" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.memo.service.SearchServiceTest" time="0.005" tests="13" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -54,19 +54,17 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testClearAllSettings" classname="com.memo.service.SettingsServiceTest" time="0.008"/>
-  <testcase name="testGetSettingWithCustomDefaultValue" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testGetSettingAsBooleanFalse" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testLoadSettingsFromNonExistentFileUsesDefaults" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testGetAllSettings" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testGetAllSettingsEmpty" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testGetSettingAsIntegerWithInvalidValueReturnsDefault" classname="com.memo.service.SettingsServiceTest" time="0.001"/>
-  <testcase name="testGetSettingAsInteger" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testSetAndGetSetting" classname="com.memo.service.SettingsServiceTest" time="0.001"/>
-  <testcase name="testGetSettingAsBooleanWithInvalidValueReturnsDefault" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testRemoveSetting" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testPersistSettingsToFile" classname="com.memo.service.SettingsServiceTest" time="0.002"/>
-  <testcase name="testLoadSettingsFromFile" classname="com.memo.service.SettingsServiceTest" time="0.001"/>
-  <testcase name="testGetSettingReturnsDefaultValueWhenNotSet" classname="com.memo.service.SettingsServiceTest" time="0.0"/>
-  <testcase name="testGetSettingAsBooleanTrue" classname="com.memo.service.SettingsServiceTest" time="0.001"/>
+  <testcase name="testSearchByStatus" classname="com.memo.service.SearchServiceTest" time="0.0"/>
+  <testcase name="testFilterByTimeRangeAfterRange" classname="com.memo.service.SearchServiceTest" time="0.0"/>
+  <testcase name="testSearchByDescriptionCaseInsensitive" classname="com.memo.service.SearchServiceTest" time="0.0"/>
+  <testcase name="testGetTotalTimeSpentForEntries" classname="com.memo.service.SearchServiceTest" time="0.001"/>
+  <testcase name="testSearchNoResults" classname="com.memo.service.SearchServiceTest" time="0.0"/>
+  <testcase name="testAdvancedSearchWithAllFilters" classname="com.memo.service.SearchServiceTest" time="0.0"/>
+  <testcase name="testSearchMultipleCriteriaCombined" classname="com.memo.service.SearchServiceTest" time="0.0"/>
+  <testcase name="testFilterByTimeRangeWithinRange" classname="com.memo.service.SearchServiceTest" time="0.0"/>
+  <testcase name="testSearchEmptyHistoryReturnsEmptyList" classname="com.memo.service.SearchServiceTest" time="0.0"/>
+  <testcase name="testGetTotalTimeSpentForEmptyList" classname="com.memo.service.SearchServiceTest" time="0.0"/>
+  <testcase name="testSearchByDescription" classname="com.memo.service.SearchServiceTest" time="0.001"/>
+  <testcase name="testSearchByActivityType" classname="com.memo.service.SearchServiceTest" time="0.0"/>
+  <testcase name="testFilterByTimeRangeBeforeRange" classname="com.memo.service.SearchServiceTest" time="0.0"/>
 </testsuite>
