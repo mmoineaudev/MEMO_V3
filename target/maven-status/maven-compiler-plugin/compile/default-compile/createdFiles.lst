@@ -1,2 +1,3 @@
 com/memo/model/ActivityEntry.class
 com/memo/service/CsvStorageService.class
+com/memo/service/HistoryService.class
