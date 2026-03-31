@@ -1,3 +1,6 @@
-com/memo/service/HistoryServiceTest.class
+com/memo/service/SearchServiceTest.class
 com/memo/model/ActivityEntryTest.class
+com/memo/service/EntryEditorServiceTest.class
+com/memo/service/HistoryServiceTest.class
 com/memo/service/CsvStorageServiceTest.class
+com/memo/service/SummaryServiceTest.class

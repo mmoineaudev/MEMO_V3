@@ -1,3 +1,8 @@
-com/memo/model/ActivityEntry.class
 com/memo/service/CsvStorageService.class
+com/memo/service/SummaryService.class
+com/memo/service/EntryEditorService.class
+com/memo/service/SearchService.class
+com/memo/service/SummaryService$DetailedSummary.class
+com/memo/model/ActivityEntry.class
+com/memo/service/SummaryService$Summary.class
 com/memo/service/HistoryService.class
