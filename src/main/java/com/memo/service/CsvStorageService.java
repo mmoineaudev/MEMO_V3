@@ -1,0 +1,185 @@
+package com.memo.service;
+
+import com.memo.model.ActivityEntry;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * Service for persisting ActivityEntries to CSV files.
+ */
+public class CsvStorageService {
+    
+    private static final String DEFAULT_STORAGE_DIR = "./log";
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+    private final String storageDir;
+    
+    public CsvStorageService() {
+        this(DEFAULT_STORAGE_DIR);
+    }
+    
+    public CsvStorageService(String dirPath) {
+        this.storageDir = dirPath;
+    }
+    
+    public void save(ActivityEntry entry) throws IOException {
+        Path dirPath = Paths.get(storageDir);
+        if (!Files.exists(dirPath)) {
+            Files.createDirectories(dirPath);
+        }
+        
+        LocalDate date = entry.timestamp().toLocalDate();
+        String dateStr = date.format(DATE_FORMATTER);
+        Path filePath = Paths.get(storageDir, dateStr + ".csv");
+        
+        // Add header if file doesn't exist
+        List<String> lines = new ArrayList<>();
+        if (Files.exists(filePath)) {
+            try (Stream<String> s = Files.lines(filePath)) {
+                lines = s.collect(Collectors.toList());
+            }
+        } else {
+            // Write header line
+            lines.add("description;activityType;comment;status;timestamp;timeSpent");
+        }
+        
+        String csvLine = convertEntryToCsv(entry);
+        lines.add(csvLine);
+        
+        Files.write(filePath, lines);
+    }
+    
+    public List<ActivityEntry> loadAll() throws IOException {
+        Path dirPath = Paths.get(storageDir);
+        
+        if (!Files.exists(dirPath) || !Files.isDirectory(dirPath)) {
+            return new ArrayList<>();
+        }
+        
+        try (Stream<Path> paths = Files.walk(dirPath)) {
+            return paths
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(".csv"))
+                    .flatMap(path -> readCsvFile(path).stream())
+                    .sorted(Comparator.comparing(ActivityEntry::timestamp).reversed())
+                    .collect(Collectors.toList());
+        }
+    }
+    
+    private String convertEntryToCsv(ActivityEntry entry) {
+        StringBuilder sb = new StringBuilder();
+        
+        // Description and activityType might contain semicolons, so we must quote them
+        sb.append('"').append(escapeQuote(entry.description())).append('"')
+          .append(';')
+          .append('"').append(escapeQuote(entry.activityType())).append('"')
+          .append(';');
+        
+        // Only escape comment if it contains special chars (already quoted above)
+        sb.append(entry.comment());
+        
+        sb.append(';')
+          .append(entry.status())
+          .append(';')
+          .append(DATE_FORMATTER.format(entry.timestamp()))
+          .append(';')
+          .append(entry.timeSpent());
+        
+        return sb.toString();
+    }
+    
+    private String escapeQuote(String value) {
+        if (value == null) return "";
+        return value.replace("\"", "\"\"");
+    }
+    
+    private List<ActivityEntry> readCsvFile(Path filePath) {
+        List<ActivityEntry> entries = new ArrayList<>();
+        
+        try (Stream<String> lines = Files.lines(filePath)) {
+            lines.skip(1).filter(line -> !line.trim().isEmpty()).forEach(line -> {
+                String[] fields = parseCsvLine(line);
+                if (fields.length >= 6) {
+                    try {
+// Fields 0-4 are always quoted
+String activityType = unescapeQuote(fields[1]);
+String description = unescapeQuote(fields[0]);
+                        String status = unescapeQuote(fields[2]);
+                        
+                        // Field 3 (comment) may or may not be quoted
+                        String comment = fields[3];
+                        if ((comment.startsWith("\"") && comment.endsWith("\"")) || 
+                            (comment.startsWith("'") && comment.endsWith("'"))) {
+                            comment = unescapeQuote(comment);
+                        }
+                        
+                        String timestampStr = unescapeQuote(fields[4]);
+                        int timeSpent = Integer.parseInt(fields[5].trim());
+                        
+                        LocalDate date = timestampStr.isEmpty() 
+                            ? LocalDate.now() 
+                            : LocalDate.parse(timestampStr, DATE_FORMATTER);
+                        
+                        LocalDateTime timestamp = date.atStartOfDay();
+                        entries.add(new ActivityEntry(activityType, description, status, comment, timestamp, timeSpent));
+                    } catch (Exception e) {
+                        // Skip malformed lines
+                    }
+                }
+            });
+        } catch (IOException e) {
+            // Silently skip unreadable files
+        }
+        
+        return entries;
+    }
+    
+    private String[] parseCsvLine(String line) {
+        List<String> fields = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        boolean inQuotes = false;
+        
+        for (char c : line.toCharArray()) {
+            if (c == '"') {
+                if (inQuotes && !current.isEmpty() && current.charAt(current.length()-1) == '"') {
+                    // Escaped quote - keep one and stay in quotes
+                    current.append('"');
+                } else {
+                    // Toggle quote state
+                    inQuotes = !inQuotes;
+                }
+            } else if (c == ';' && !inQuotes) {
+                fields.add(current.toString());
+                current = new StringBuilder();
+            } else {
+                current.append(c);
+            }
+        }
+        
+        fields.add(current.toString());
+        return fields.toArray(new String[0]);
+    }
+    
+    private String unescapeQuote(String value) {
+        if (value == null || value.isEmpty()) return "";
+        
+        // Handle quoted values by stripping outer quotes
+        if ((value.startsWith("\"") && value.endsWith("\"")) || 
+            (value.startsWith("'") && value.endsWith("'"))) {
+            return value.substring(1, value.length() - 1);
+        }
+        
+        // Return as-is for non-quoted values
+        return value;
+    }
+}
