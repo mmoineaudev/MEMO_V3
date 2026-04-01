@@ -26,7 +26,7 @@ public class EntryEditorService {
      * @param timeSpent Time spent in minutes
      * @return The created ActivityEntry
      */
-public ActivityEntry create(String activityType, String description, int timeSpent) {
+    public ActivityEntry create(String activityType, String description, int timeSpent) {
         return create(activityType, description, timeSpent, LocalDateTime.now());
     }
     
@@ -141,12 +141,12 @@ public ActivityEntry create(String activityType, String description, int timeSpe
         this.lastDescription = description;
     }
     
-/**
- * Adds an entry directly to history without updating existing entries.
- * Used for creating new entries.
- * 
- * @param entry The entry to add
- */
+   /**
+     * Adds an entry directly to history without updating existing entries.
+     * Used for creating new entries.
+     * 
+     * @param entry The entry to add
+     */
     public void addToHistory(ActivityEntry entry) {
         historyService.add(entry);
     }
