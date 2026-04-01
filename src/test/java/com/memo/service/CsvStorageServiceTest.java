@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +28,7 @@ class CsvStorageServiceTest {
     
     @Test
     void testWriteEntryToCsvFile() throws Exception {
-        ActivityEntry entry = new ActivityEntry("Development", "Fix bug in login module", "TODO", "Check auth logic", 30);
+        ActivityEntry entry = ActivityEntry.ofDate("Development", "Fix bug in login module", "TODO", "Check auth logic", LocalDate.of(2026, 3, 31), 30);
         
         Path expectedFile = tempDir.resolve("2026-03-31.csv");
         storageService.save(entry);
@@ -37,8 +38,8 @@ class CsvStorageServiceTest {
     
     @Test
     void testWriteMultipleEntriesSeparateFiles() throws Exception {
-        ActivityEntry entry1 = new ActivityEntry("Development", "First task", "DONE", "", 60);
-        ActivityEntry entry2 = new ActivityEntry("Review", "Second task", "DOING", "", 45);
+        ActivityEntry entry1 = ActivityEntry.ofDate("Development", "First task", "DONE", "", LocalDate.of(2026, 3, 31), 60);
+        ActivityEntry entry2 = ActivityEntry.ofDate("Review", "Second task", "DOING", "", LocalDate.of(2026, 4, 1), 45);
         
         storageService.save(entry1);
         storageService.save(entry2);
@@ -48,14 +49,15 @@ class CsvStorageServiceTest {
         
         assertTrue(Files.exists(file1));
         assertTrue(Files.exists(file2));
-        assertEquals(1, Files.lines(file1).count());
-        assertEquals(1, Files.lines(file2).count());
+        // Each file has 1 header line + 1 data line = 2 lines total
+        assertEquals(2, Files.lines(file1).count());
+        assertEquals(2, Files.lines(file2).count());
     }
     
     @Test
     void testReadAllEntriesFromMultipleFiles() throws Exception {
-        ActivityEntry entry1 = new ActivityEntry("Development", "Task 1", "DONE", "", 60);
-        ActivityEntry entry2 = new ActivityEntry("Review", "Task 2", "DOING", "", 45);
+        ActivityEntry entry1 = ActivityEntry.ofDate("Development", "Task 1", "DONE", "", LocalDate.of(2026, 3, 31), 60);
+        ActivityEntry entry2 = ActivityEntry.ofDate("Review", "Task 2", "DOING", "", LocalDate.of(2026, 4, 1), 45);
         
         storageService.save(entry1);
         storageService.save(entry2);
@@ -64,25 +66,26 @@ class CsvStorageServiceTest {
         
         assertEquals(2, entries.size());
         
+        // Entries are sorted by timestamp DESC, so 2026-04-01 comes first
         ActivityEntry loaded1 = entries.get(0);
         ActivityEntry loaded2 = entries.get(1);
         
-        assertEquals("Development", loaded1.activityType());
-        assertEquals("Task 1", loaded1.description());
-        assertEquals("DONE", loaded1.status());
-        assertEquals(60, loaded1.timeSpent());
+        assertEquals("Review", loaded1.activityType());
+        assertEquals("Task 2", loaded1.description());
+        assertEquals("DOING", loaded1.status());
+        assertEquals(45, loaded1.timeSpent());
         
-        assertEquals("Review", loaded2.activityType());
-        assertEquals("Task 2", loaded2.description());
-        assertEquals("DOING", loaded2.status());
-        assertEquals(45, loaded2.timeSpent());
+        assertEquals("Development", loaded2.activityType());
+        assertEquals("Task 1", loaded2.description());
+        assertEquals("DONE", loaded2.status());
+        assertEquals(60, loaded2.timeSpent());
     }
     
     @Test
     void testMultiLineCommentEncoding() throws Exception {
         String multilineComment = "First line\nSecond line\nThird line";
         
-        ActivityEntry entry = new ActivityEntry("Note", "Important note", "NOTE", multilineComment, 0);
+        ActivityEntry entry = ActivityEntry.ofDate("Note", "Important note", "NOTE", multilineComment, LocalDate.now(), 0);
         
         storageService.save(entry);
         List<ActivityEntry> entries = storageService.loadAll();
@@ -93,7 +96,7 @@ class CsvStorageServiceTest {
     
     @Test
     void testSemicolonSanitization() throws Exception {
-        ActivityEntry entry = new ActivityEntry("Development", "Task with;semicolon", "TODO", "Comments with;semicolons too", 30);
+        ActivityEntry entry = ActivityEntry.ofDate("Development", "Task with;semicolon", "TODO", "Comments with;semicolons too", LocalDate.now(), 30);
         
         storageService.save(entry);
         List<ActivityEntry> entries = storageService.loadAll();
@@ -103,7 +106,7 @@ class CsvStorageServiceTest {
     
     @Test
     void testHandleEmptyComment() throws Exception {
-        ActivityEntry entry = new ActivityEntry("Development", "Task with no comment", "DONE", "", 45);
+        ActivityEntry entry = ActivityEntry.ofDate("Development", "Task with no comment", "DONE", "", LocalDate.now(), 45);
         
         storageService.save(entry);
         List<ActivityEntry> entries = storageService.loadAll();
@@ -114,7 +117,7 @@ class CsvStorageServiceTest {
     
     @Test
     void testHandleSpecialCharacters() throws Exception {
-        ActivityEntry entry = new ActivityEntry("Development", "Task with special chars: @#$%^&*()", "TODO", "More special chars: \\t \\n \"\\'", 60);
+        ActivityEntry entry = ActivityEntry.ofDate("Development", "Task with special chars: @#$%^&*()", "TODO", "More special chars: \\t \\n \"\\'", LocalDate.now(), 60);
         
         storageService.save(entry);
         List<ActivityEntry> entries = storageService.loadAll();
@@ -130,7 +133,7 @@ class CsvStorageServiceTest {
         
         assertFalse(Files.exists(newDir));
         
-        ActivityEntry entry = new ActivityEntry("Development", "Test task", "TODO", "", 30);
+        ActivityEntry entry = ActivityEntry.ofDate("Development", "Test task", "TODO", "", LocalDate.now(), 30);
         service.save(entry);
         
         assertTrue(Files.exists(newDir));
@@ -147,7 +150,7 @@ class CsvStorageServiceTest {
     
     @Test
     void testRoundTripPreservesData() throws Exception {
-        ActivityEntry original = new ActivityEntry("Development", "Round trip task", "DOING", "Original comment", 120);
+        ActivityEntry original = ActivityEntry.ofDate("Development", "Round trip task", "DOING", "Original comment", LocalDate.now(), 120);
         
         storageService.save(original);
         List<ActivityEntry> loaded = storageService.loadAll();
@@ -164,9 +167,9 @@ class CsvStorageServiceTest {
     
     @Test
     void testWriteAllAndReadAllPreservingOrder() throws Exception {
-        ActivityEntry entry1 = new ActivityEntry("Task", "First entry", "DONE", "", 60);
-        ActivityEntry entry2 = new ActivityEntry("Task", "Second entry", "DOING", "", 90);
-        ActivityEntry entry3 = new ActivityEntry("Task", "Third entry", "TODO", "", 120);
+        ActivityEntry entry1 = ActivityEntry.ofDate("Task", "First entry", "DONE", "", LocalDate.now(), 60);
+        ActivityEntry entry2 = ActivityEntry.ofDate("Task", "Second entry", "DOING", "", LocalDate.now(), 90);
+        ActivityEntry entry3 = ActivityEntry.ofDate("Task", "Third entry", "TODO", "", LocalDate.now(), 120);
         
         storageService.save(entry1);
         storageService.save(entry2);

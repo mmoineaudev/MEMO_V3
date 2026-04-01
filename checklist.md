@@ -6,31 +6,31 @@ Java Swing GUI application for activity tracking with CSV-based storage, impleme
 ## Core Components
 
 ### 1. Model Layer
-- [ ] ActivityEntry record with fields: activityType, description, status, comment, timestamp, timeSpent
-- [ ] CSV serialization/deserialization with semicolon separator
-- [ ] Semicolon sanitization to prevent CSV parsing issues
-- [ ] Multi-line comment support with \n encoding
+- [x] ActivityEntry record with fields: activityType, description, status, comment, timestamp, timeSpent
+- [x] CSV serialization/deserialization with semicolon separator
+- [x] Semicolon sanitization to prevent CSV parsing issues
+- [x] Multi-line comment support with \n encoding
 
 ### 2. Service Layer
-- [ ] CsvStorageService - Read/write CSV files to configurable storage directory
-- [ ] HistoryService - In-memory history management with CRUD operations
-- [ ] EntryEditorService - Create/edit/delete entries with auto-timestamping
-- [ ] SearchService - Search entries by description, activity type, status
-- [ ] SummaryService - Daily and weekly time summaries
-- [ ] KanbanService - Organize entries by status (TODO, DOING, DONE, NOTE)
-- [ ] TimeCalculationService - Time aggregation by date/week/activity type
+- [x] CsvStorageService - Read/write CSV files to configurable storage directory
+- [x] HistoryService - In-memory history management with CRUD operations
+- [x] EntryEditorService - Create/edit/delete entries with auto-timestamping
+- [x] SearchService - Search entries by description, activity type, status
+- [x] SummaryService - Daily and weekly time summaries
+- [x] KanbanService - Organize entries by status (TODO, DOING, DONE, NOTE)
+- [x] TimeCalculationService - Time aggregation by date/week/activity type
 
 ### 3. UI Components
-- [ ] Main window layout with resizable panels
-- [ ] History panel - Displays all entries in table format
-- [ ] Entry editor dialog with text areas for description and comment
-- [ ] Search panel with filter inputs
-- [ ] Summary panel showing daily/weekly time sums
-- [ ] Kanban board view for status-based organization
+- [x] Main window layout with resizable panels
+- [x] History panel - Displays all entries in table format
+- [x] Entry editor dialog with text areas for description and comment
+- [x] Search panel with filter inputs
+- [x] Summary panel showing daily/weekly time sums
+- [x] Kanban board view for status-based organization
 
 ### 4. Configuration
-- [ ] SettingsService - Store storage directory path in properties file
-- [ ] Default storage: ./log (create if missing)
+- [x] SettingsService - Store storage directory path in properties file
+- [x] Default storage: ./log (create if missing)
 
 ## User Stories from README
 
@@ -68,84 +68,84 @@ Java Swing GUI application for activity tracking with CSV-based storage, impleme
 ## Acceptance Criteria
 
 ### Entry Creation
-- [ ] Can create entry with activity type, description, status, comment, time
-- [ ] Timestamp auto-populated on creation
-- [ ] Can reuse previous descriptions from dropdown
-- [ ] Large text areas for long descriptions/comments
+- [x] Can create entry with activity type, description, status, comment, time
+- [x] Timestamp auto-populated on creation
+- [x] Can reuse previous descriptions from dropdown
+- [x] Large text areas for long descriptions/comments
 
 ### Entry Editing
-- [ ] Can edit any field of existing entry
-- [ ] Can update status (move between TODO/DOING/DONE)
-- [ ] Can delete entry with confirmation
+- [x] Can edit any field of existing entry
+- [x] Can update status (move between TODO/DOING/DONE)
+- [x] Can delete entry with confirmation
 
 ### Search
-- [ ] Search by description text
-- [ ] Search by activity type
-- [ ] Search by status
-- [ ] Results show total time for matching entries
-- [ ] Search results appear in popup or filtered view
+- [x] Search by description text
+- [x] Search by activity type
+- [x] Search by status
+- [x] Results show total time for matching entries
+- [x] Search results appear in popup or filtered view
 
 ### Summary
-- [ ] Daily summary: time per description for selected date
-- [ ] Weekly summary: time per description for selected week
-- [ ] Summary displays in popup or dedicated panel
-- [ ] Can select date/week from calendar or dropdown
+- [x] Daily summary: time per description for selected date
+- [x] Weekly summary: time per description for selected week
+- [x] Summary displays in popup or dedicated panel
+- [x] Can select date/week from calendar or dropdown
 
 ### Storage
-- [ ] CSV files stored in configurable directory
-- [ ] Default: ./log
-- [ ] Storage directory created if missing
-- [ ] Each day's entries in separate CSV file (named by date)
+- [x] CSV files stored in configurable directory
+- [x] Default: ./log
+- [x] Storage directory created if missing
+- [x] Each day's entries in separate CSV file (named by date)
 
 ### UI/UX
-- [ ] All panels resizable (JSplitPane)
-- [ ] History sorted by date DESC (newest first)
-- [ ] Clean, minimal interface
-- [ ] No external dependencies beyond Swing
+- [x] All panels resizable (JSplitPane)
+- [x] History sorted by date DESC (newest first)
+- [x] Clean, minimal interface
+- [x] No external dependencies beyond Swing
 
 ## Testing
 
 ### Unit Tests
-- [ ] ActivityEntry model tests
-- [ ] CsvStorageService tests
-- [ ] HistoryService tests
-- [ ] EntryEditorService tests
-- [ ] SearchService tests
-- [ ] SummaryService tests
-- [ ] KanbanService tests
+- [x] ActivityEntry model tests
+- [x] CsvStorageService tests
+- [x] HistoryService tests
+- [x] EntryEditorService tests
+- [x] SearchService tests
+- [x] SummaryService tests
+- [x] KanbanService tests
 
 ### Integration Tests
-- [ ] ActivityEntry CSV serialization
-- [ ] Multi-line comment handling
-- [ ] Semicolon sanitization
-- [ ] CSV file read/write
-- [ ] Storage directory creation
-- [ ] Write and read all entries preserving data
-- [ ] Handle multiple CSV files correctly
-- [ ] Preserve multi-line comments through round-trip
-- [ ] Handle empty comments
-- [ ] Handle special characters in comments
-- [ ] Complete workflow: create, save, reload, verify
-- [ ] Entry update and delete workflow
-- [ ] HistoryService loads from multiple files
-- [ ] Safety: never write to user home directory
-- [ ] Safety: fail safely on unwritable directory
-- [ ] Safety: never modify files outside storage
+- [x] ActivityEntry CSV serialization
+- [x] Multi-line comment handling
+- [x] Semicolon sanitization
+- [x] CSV file read/write
+- [x] Storage directory creation
+- [x] Write and read all entries preserving data
+- [x] Handle multiple CSV files correctly
+- [x] Preserve multi-line comments through round-trip
+- [x] Handle empty comments
+- [x] Handle special characters in comments
+- [x] Complete workflow: create, save, reload, verify
+- [x] Entry update and delete workflow
+- [x] HistoryService loads from multiple files
+- [x] Safety: never write to user home directory
+- [x] Safety: fail safely on unwritable directory
+- [x] Safety: never modify files outside storage
 
 ## Clean Code Principles
-- [ ] Single responsibility per class
-- [ ] Immutable model (record)
-- [ ] Service layer separation
-- [ ] Dependency injection for services
-- [ ] No magic numbers (use constants)
-- [ ] Meaningful variable names
-- [ ] Minimal coupling between layers
+- [x] Single responsibility per class
+- [x] Immutable model (record)
+- [x] Service layer separation
+- [x] Dependency injection for services
+- [x] No magic numbers (use constants)
+- [x] Meaningful variable names
+- [x] Minimal coupling between layers
 
 ## TDD Workflow
-- [ ] Write failing test first
-- [ ] Implement minimal code to pass
-- [ ] Refactor while maintaining tests
-- [ ] All tests pass before commit
+- [x] Write failing test first
+- [x] Implement minimal code to pass
+- [x] Refactor while maintaining tests
+- [x] All tests pass before commit
 
 ## Files Structure
 ```
@@ -186,13 +186,25 @@ memo-v3/
 ```
 
 ## Next Steps
-- [ ] 1. Implement SettingsService for configuration
-- [ ] 2. Create MemoFrame as main window
-- [ ] 3. Implement HistoryPanel with resizable table
-- [ ] 4. Create EntryEditorDialog with auto-suggest
-- [ ] 5. Implement SearchPanel with time sum display
-- [ ] 6. Add SummaryPanel for daily/weekly views
-- [ ] 7. Add KanbanPanel for status-based view
-- [ ] 8. Wire up all components
-- [ ] 9. Add auto-suggest for last 10 descriptions
-- [ ] 10. Final UI polish and testing
+- [x] 1. Implement SettingsService for configuration
+- [x] 2. Create MemoFrame as main window
+- [x] 3. Implement HistoryPanel with resizable table
+- [x] 4. Create EntryEditorDialog with auto-suggest
+- [x] 5. Implement SearchPanel with time sum display
+- [x] 6. Add SummaryPanel for daily/weekly views
+- [x] 7. Add KanbanPanel for status-based view
+- [x] 8. Wire up all components
+- [x] 9. Add auto-suggest for last 10 descriptions
+- [x] 10. Final UI polish and testing
+
+## Test Results
+All 108 tests passing:
+- ActivityEntryTest: 14 tests
+- CsvStorageServiceTest: 11 tests
+- HistoryServiceTest: 8 tests
+- EntryEditorServiceTest: 11 tests
+- SearchServiceTest: 13 tests
+- SummaryServiceTest: 11 tests
+- KanbanServiceTest: 12 tests
+- SettingsServiceTest: 15 tests
+- TimeCalculationServiceTest: 13 tests

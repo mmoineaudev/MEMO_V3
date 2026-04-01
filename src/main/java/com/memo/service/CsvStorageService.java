@@ -76,26 +76,48 @@ public class CsvStorageService {
         }
     }
     
-    private String convertEntryToCsv(ActivityEntry entry) {
+     private String convertEntryToCsv(ActivityEntry entry) {
         StringBuilder sb = new StringBuilder();
         
-        // Description and activityType might contain semicolons, so we must quote them
-        sb.append('"').append(escapeQuote(entry.description())).append('"')
-          .append(';')
-          .append('"').append(escapeQuote(entry.activityType())).append('"')
-          .append(';');
+        // All fields that might contain semicolons must be quoted
+        // Also encode newlines and carriage returns to avoid breaking CSV line parsing
+        String description = encodeNewlines(entry.description());
+        String activityType = encodeNewlines(entry.activityType());
+        String comment = encodeNewlines(entry.comment());
+        String status = encodeNewlines(entry.status());
+        String timestamp = encodeNewlines(DATE_FORMATTER.format(entry.timestamp()));
+        String timeSpent = encodeNewlines(String.valueOf(entry.timeSpent()));
         
-        // Only escape comment if it contains special chars (already quoted above)
-        sb.append(entry.comment());
-        
-        sb.append(';')
-          .append(entry.status())
+        sb.append('"').append(escapeQuote(description)).append('"')
           .append(';')
-          .append(DATE_FORMATTER.format(entry.timestamp()))
+          .append('"').append(escapeQuote(activityType)).append('"')
           .append(';')
-          .append(entry.timeSpent());
+          .append('"').append(escapeQuote(comment)).append('"')
+          .append(';')
+          .append('"').append(escapeQuote(status)).append('"')
+          .append(';')
+          .append('"').append(escapeQuote(timestamp)).append('"')
+          .append(';')
+          .append('"').append(escapeQuote(timeSpent)).append('"');
         
         return sb.toString();
+    }
+    
+    /**
+     * Encodes newlines and carriage returns to avoid breaking CSV line parsing.
+     * \n becomes \\n, \r becomes \\r
+     */
+    private String encodeNewlines(String value) {
+        if (value == null) return "";
+        return value.replace("\n", "\\n").replace("\r", "\\r");
+    }
+    
+    /**
+     * Decodes escaped newlines and carriage returns.
+     */
+    private String decodeNewlines(String value) {
+        if (value == null) return "";
+        return value.replace("\\n", "\n").replace("\\r", "\r");
     }
     
     private String escapeQuote(String value) {
@@ -111,20 +133,20 @@ public class CsvStorageService {
                 String[] fields = parseCsvLine(line);
                 if (fields.length >= 6) {
                     try {
-// Fields 0-4 are always quoted
-String activityType = unescapeQuote(fields[1]);
-String description = unescapeQuote(fields[0]);
-                        String status = unescapeQuote(fields[2]);
-                        
-                        // Field 3 (comment) may or may not be quoted
-                        String comment = fields[3];
-                        if ((comment.startsWith("\"") && comment.endsWith("\"")) || 
-                            (comment.startsWith("'") && comment.endsWith("'"))) {
-                            comment = unescapeQuote(comment);
-                        }
-                        
+                        String description = unescapeQuote(fields[0]);
+                        String activityType = unescapeQuote(fields[1]);
+                        String comment = unescapeQuote(fields[2]);
+                        String status = unescapeQuote(fields[3]);
                         String timestampStr = unescapeQuote(fields[4]);
-                        int timeSpent = Integer.parseInt(fields[5].trim());
+                        int timeSpent = Integer.parseInt(unescapeQuote(fields[5]).trim());
+                        
+                        // Decode newlines that were encoded during write
+                        description = decodeNewlines(description);
+                        activityType = decodeNewlines(activityType);
+                        comment = decodeNewlines(comment);
+                        status = decodeNewlines(status);
+                        timestampStr = decodeNewlines(timestampStr);
+                        timeSpent = Integer.parseInt(decodeNewlines(String.valueOf(timeSpent)).trim());
                         
                         LocalDate date = timestampStr.isEmpty() 
                             ? LocalDate.now() 
