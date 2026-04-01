@@ -121,23 +121,20 @@ public class EntryEditorDialog extends JDialog {
             }
             
             // Create new entry with current timestamp
-            ActivityEntry entry = editorService.create(activityType, description, timeSpent);
-            
-            // Update with status and comment
-            ActivityEntry updated = new ActivityEntry(
-                    entry.activityType(),
-                    entry.description(),
+            ActivityEntry entry = new ActivityEntry(
+                    activityType,
+                    description.isEmpty() ? "Task" : description,
                     status,
                     comment,
-                    entry.timestamp(),
-                    entry.timeSpent()
+                    java.time.LocalDateTime.now(),
+                    timeSpent
             );
             
             // Add to history service (in-memory)
-            editorService.addToHistory(updated);
+            editorService.addToHistory(entry);
             
             // Save to CSV file
-            saveEntryToStorage(updated);
+            saveEntryToStorage(entry);
             
             // Store the last description for reuse
             editorService.setLastDescription(description);
@@ -164,12 +161,8 @@ public class EntryEditorDialog extends JDialog {
             storageService.createStorageDirectory();
         }
         
-        // Get or create the list for today's date
-        List<ActivityEntry> entries = storageService.loadAll();
-        entries.add(entry);
-        
-        // Save all entries (will be organized by date in CsvStorageService)
-        storageService.saveAll(entries);
+        // Save the single entry directly
+        storageService.save(entry);
     }
     
     private void onCancel() {
