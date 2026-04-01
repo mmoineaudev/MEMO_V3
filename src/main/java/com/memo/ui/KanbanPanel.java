@@ -2,21 +2,26 @@ package com.memo.ui;
 
 import com.memo.model.ActivityEntry;
 import com.memo.service.EntryEditorService;
+import com.memo.service.HistoryService;
 import com.memo.service.KanbanService;
 import javax.swing.*;
 import java.awt.*;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Panel for displaying activities in a Kanban board layout.
+ * Supports status changes and entry editing.
  */
 public class KanbanPanel extends JPanel {
     
     private KanbanService kanbanService;
     private EntryEditorService editorService;
+    private HistoryService historyService;
     
     public KanbanPanel(KanbanService kanbanService, EntryEditorService editorService) {
         this.kanbanService = kanbanService;
         this.editorService = editorService;
+        this.historyService = editorService.getHistoryService();
         
         setLayout(new BorderLayout());
         
@@ -99,34 +104,78 @@ public class KanbanPanel extends JPanel {
                 BorderFactory.createEmptyBorder(5, 8, 5, 8)));
         card.setBackground(Color.WHITE);
         
-        // Activity type as title
+        // Activity type as title with edit button
+        JPanel headerPanel = new JPanel(new BorderLayout());
         JLabel titleLabel = new JLabel(entry.activityType());
         titleLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        card.add(titleLabel, BorderLayout.NORTH);
+        headerPanel.add(titleLabel, BorderLayout.WEST);
+        
+        JButton editButton = new JButton("✎");
+        editButton.setToolTipText("Edit entry");
+        editButton.setPreferredSize(new Dimension(24, 20));
+        editButton.addActionListener(e -> openEditDialog(entry));
+        headerPanel.add(editButton, BorderLayout.EAST);
+        
+        card.add(headerPanel, BorderLayout.NORTH);
         
         // Description
         JTextArea descArea = new JTextArea(entry.description());
         descArea.setEditable(false);
         descArea.setLineWrap(true);
         descArea.setWrapStyleWord(true);
-        descArea.setPreferredSize(new Dimension(0, 50));
+        descArea.setPreferredSize(new Dimension(0, 40));
         card.add(descArea, BorderLayout.CENTER);
         
-        // Time spent at bottom
-        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JLabel timeLabel = new JLabel(entry.timeSpent() + " min");
-        footerPanel.add(timeLabel);
-        
-        // Move buttons
-        JButton moveNext = new JButton("→");
-        JButton movePrev = new JButton("←");
-        
-        if (!entry.status().equals("TODO")) {
-            movePrev.addActionListener(e -> kanbanService.moveToPreviousStatus(entry.activityType()));
+        // Comment (if present)
+        if (entry.comment() != null && !entry.comment().isEmpty()) {
+            JPanel commentPanel = new JPanel(new BorderLayout());
+            commentPanel.setBackground(new Color(245, 245, 245));
+            JLabel commentLabel = new JLabel("💬 " + entry.comment());
+            commentLabel.setFont(new Font("Arial", Font.ITALIC, 10));
+            commentLabel.setForeground(Color.GRAY);
+            commentPanel.add(commentLabel, BorderLayout.CENTER);
+            card.add(commentPanel, BorderLayout.SOUTH);
         }
         
-        if (!entry.status().equals("DONE")) {
-            moveNext.addActionListener(e -> kanbanService.moveToNextStatus(entry.activityType()));
+        // Footer with time and action buttons
+        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        
+        JLabel timeLabel = new JLabel(entry.timeSpent() + " min");
+        timeLabel.setFont(new Font("Arial", Font.BOLD, 10));
+        footerPanel.add(timeLabel);
+        
+        // Separator
+        footerPanel.add(Box.createHorizontalStrut(5));
+        footerPanel.add(new JLabel("|"));
+        footerPanel.add(Box.createHorizontalStrut(5));
+        
+        // Move buttons
+        JButton movePrev = new JButton("←");
+        movePrev.setToolTipText("Move to previous status");
+        movePrev.setPreferredSize(new Dimension(28, 20));
+        
+        JButton moveNext = new JButton("→");
+        moveNext.setToolTipText("Move to next status");
+        moveNext.setPreferredSize(new Dimension(28, 20));
+        
+        String currentStatus = entry.status();
+        ActivityEntry originalEntry = entry; // Capture for lambda
+        
+        if (!currentStatus.equals("TODO")) {
+            movePrev.setEnabled(true);
+            movePrev.addActionListener(e -> changeEntryStatus(originalEntry, getPreviousStatus(currentStatus)));
+        } else {
+            movePrev.setEnabled(false);
+        }
+        
+        if (currentStatus.equals("TODO")) {
+            moveNext.setEnabled(true);
+            moveNext.addActionListener(e -> changeEntryStatus(originalEntry, "DOING"));
+        } else if (currentStatus.equals("DOING")) {
+            moveNext.setEnabled(true);
+            moveNext.addActionListener(e -> changeEntryStatus(originalEntry, "DONE"));
+        } else {
+            moveNext.setEnabled(false);
         }
         
         footerPanel.add(movePrev);
@@ -134,7 +183,141 @@ public class KanbanPanel extends JPanel {
         
         card.add(footerPanel, BorderLayout.SOUTH);
         
+        // Double-click to edit
+        card.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    openEditDialog(entry);
+                }
+            }
+        });
+        
         return card;
+    }
+    
+    private String getPreviousStatus(String current) {
+        if (current.equals("DOING")) return "TODO";
+        if (current.equals("DONE")) return "DOING";
+        if (current.equals("NOTE")) return "DONE";
+        return "TODO";
+    }
+    
+    private void changeEntryStatus(ActivityEntry entry, String newStatus) {
+        // Get the current entries and update the status
+        var allEntries = historyService.getAll();
+        
+        ActivityEntry updated = null;
+        for (ActivityEntry e : allEntries) {
+            if (e.activityType().equals(entry.activityType()) && 
+                e.timestamp().equals(entry.timestamp())) {
+                updated = new ActivityEntry(
+                        e.activityType(),
+                        e.description(),
+                        newStatus,
+                        e.comment(),
+                        e.timestamp(),
+                        e.timeSpent()
+                );
+                break;
+            }
+        }
+        
+        if (updated != null) {
+            historyService.update(updated);
+            refreshKanban();
+        }
+    }
+    
+    private void openEditDialog(ActivityEntry entry) {
+        // Create a simple edit dialog for status and comment
+        JDialog dialog = new JDialog((Frame)null, "Edit Entry", true);
+        dialog.setLayout(new GridBagLayout());
+        dialog.setSize(400, 300);
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 10, 5, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        
+        // Title
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        JLabel titleLabel = new JLabel("Edit: " + entry.activityType());
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        dialog.add(titleLabel, gbc);
+        
+        // Description (read-only)
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        dialog.add(new JLabel("Description:"), gbc);
+        
+        gbc.gridx = 1;
+        gbc.gridwidth = 1;
+        JTextField descField = new JTextField(entry.description());
+        descField.setEditable(false);
+        dialog.add(descField, gbc);
+        
+        // Status
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        dialog.add(new JLabel("Status:"), gbc);
+        
+        gbc.gridx = 1;
+        gbc.gridwidth = 1;
+        String[] statuses = {"TODO", "DOING", "DONE", "NOTE"};
+        JComboBox<String> statusCombo = new JComboBox<>(statuses);
+        statusCombo.setSelectedItem(entry.status());
+        dialog.add(statusCombo, gbc);
+        
+        // Comment
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
+        dialog.add(new JLabel("Comment:"), gbc);
+        
+        gbc.gridx = 1;
+        gbc.gridwidth = 1;
+        JTextArea commentArea = new JTextArea(entry.comment());
+        commentArea.setRows(4);
+        JScrollPane scrollPane = new JScrollPane(commentArea);
+        dialog.add(scrollPane, gbc);
+        
+        // Buttons
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(e -> {
+            String newStatus = (String) statusCombo.getSelectedItem();
+            String newComment = commentArea.getText().trim();
+            
+            ActivityEntry updated = new ActivityEntry(
+                    entry.activityType(),
+                    entry.description(),
+                    newStatus,
+                    newComment.isEmpty() ? null : newComment,
+                    entry.timestamp(),
+                    entry.timeSpent()
+            );
+            
+            historyService.update(updated);
+            dialog.dispose();
+            refreshKanban();
+        });
+        
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(e -> dialog.dispose());
+        
+        buttonPanel.add(saveButton);
+        buttonPanel.add(cancelButton);
+        dialog.add(buttonPanel, gbc);
+        
+        dialog.setVisible(true);
     }
     
     /**

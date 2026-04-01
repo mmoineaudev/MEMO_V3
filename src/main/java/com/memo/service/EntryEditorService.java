@@ -141,13 +141,22 @@ public ActivityEntry create(String activityType, String description, int timeSpe
         this.lastDescription = description;
     }
     
-    /**
-     * Adds an entry directly to history without updating existing entries.
-     * Used for creating new entries.
-     * 
-     * @param entry The entry to add
-     */
+/**
+ * Adds an entry directly to history without updating existing entries.
+ * Used for creating new entries.
+ * 
+ * @param entry The entry to add
+ */
     public void addToHistory(ActivityEntry entry) {
         historyService.add(entry);
+    }
+    
+    /**
+     * Returns the underlying HistoryService.
+     * 
+     * @return The HistoryService instance
+     */
+    public HistoryService getHistoryService() {
+        return historyService;
     }
 }
