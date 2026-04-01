@@ -4,6 +4,8 @@ import com.memo.service.SummaryService;
 import com.memo.service.TimeCalculationService;
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Panel for displaying daily and weekly summaries.
@@ -13,6 +15,14 @@ public class SummaryPanel extends JPanel {
     private SummaryService summaryService;
     private TimeCalculationService timeCalcService;
     
+    private JSpinner dateSpinner;
+    private JLabel dailyTimeLabel;
+    private JLabel dailyCountLabel;
+    private JLabel dailyAvgLabel;
+    private JLabel weeklyTimeLabel;
+    private JLabel weeklyCountLabel;
+    private JLabel weeklyAvgLabel;
+    
     public SummaryPanel(SummaryService summaryService, TimeCalculationService timeCalcService) {
         this.summaryService = summaryService;
         this.timeCalcService = timeCalcService;
@@ -20,85 +30,121 @@ public class SummaryPanel extends JPanel {
         setLayout(new BorderLayout());
         
         createSummaryDisplay();
+        refreshSummaries();
     }
     
     private void createSummaryDisplay() {
         JPanel mainPanel = new JPanel(new GridLayout(2, 1, 10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        // Daily Summary
-        JPanel dailyPanel = createSummaryCard("Daily Summary", "Today's Statistics");
-        mainPanel.add(dailyPanel);
+        // Date selector
+        JPanel dateSelector = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        dateSelector.setBorder(BorderFactory.createTitledBorder("Select Date"));
+        dateSelector.add(new JLabel("Date: "));
         
-        // Weekly Summary
-        JPanel weeklyPanel = createSummaryCard("Weekly Summary", "Last 7 Days Statistics");
-        mainPanel.add(weeklyPanel);
+        SpinnerDateModel dateModel = new SpinnerDateModel();
+        dateSpinner = new JSpinner(dateModel);
+        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateSpinner, "yyyy-MM-dd");
+        dateSpinner.setEditor(dateEditor);
+        dateSelector.add(dateSpinner);
+        
+        JButton selectButton = new JButton("Show Summary");
+        selectButton.addActionListener(e -> refreshSummaries());
+        dateSelector.add(selectButton);
+        
+        mainPanel.add(dateSelector);
+        
+        // Daily and Weekly Summary cards
+        JPanel summariesPanel = new JPanel(new GridLayout(2, 1, 10, 0));
+        
+        // Daily Summary
+        JPanel dailyPanel = createDailySummaryCard();
+        summariesPanel.add(dailyPanel);
+        
+        // Weekly Summary  
+        JPanel weeklyPanel = createWeeklySummaryCard();
+        summariesPanel.add(weeklyPanel);
+        
+        mainPanel.add(summariesPanel);
         
         add(mainPanel, BorderLayout.CENTER);
     }
     
-    private JPanel createSummaryCard(String title, String subtitle) {
+    private JPanel createDailySummaryCard() {
         JPanel card = new JPanel(new BorderLayout());
-        card.setBorder(BorderFactory.createTitledBorder(title));
+        card.setBorder(BorderFactory.createTitledBorder("Daily Summary"));
         
-        // Title and subtitle
-        JPanel headerPanel = new JPanel(new GridLayout(2, 1));
-        JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        JPanel headerPanel = new JPanel();
+        JLabel titleLabel = new JLabel("Daily Statistics");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
         titleLabel.setForeground(Color.BLUE);
-        
-        JLabel subLabel = new JLabel(subtitle);
-        subLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        
         headerPanel.add(titleLabel);
-        headerPanel.add(subLabel);
         card.add(headerPanel, BorderLayout.NORTH);
         
-        // Stats panel
         JPanel statsPanel = new JPanel(new GridLayout(3, 1, 5, 0));
         statsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        JLabel timeLabel = new JLabel("Total Time: -");
-        JLabel countLabel = new JLabel("Activities: -");
-        JLabel avgLabel = new JLabel("Average per activity: -");
+        dailyTimeLabel = new JLabel("Total Time: -");
+        dailyCountLabel = new JLabel("Activities: -");
+        dailyAvgLabel = new JLabel("Average per activity: -");
         
-        statsPanel.add(timeLabel);
-        statsPanel.add(countLabel);
-        statsPanel.add(avgLabel);
+        statsPanel.add(dailyTimeLabel);
+        statsPanel.add(dailyCountLabel);
+        statsPanel.add(dailyAvgLabel);
         
         card.add(statsPanel, BorderLayout.CENTER);
-        
-        // Refresh button
-        JButton refreshButton = new JButton("Refresh");
-        card.add(refreshButton, BorderLayout.SOUTH);
-        
-        refreshButton.addActionListener(e -> updateSummaryStats(statsPanel));
         
         return card;
     }
     
-    private void updateSummaryStats(JPanel statsPanel) {
-        // Daily summary
+    private JPanel createWeeklySummaryCard() {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBorder(BorderFactory.createTitledBorder("Weekly Summary"));
+        
+        JPanel headerPanel = new JPanel();
+        JLabel titleLabel = new JLabel("Last 7 Days Statistics");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        titleLabel.setForeground(Color.GREEN);
+        headerPanel.add(titleLabel);
+        card.add(headerPanel, BorderLayout.NORTH);
+        
+        JPanel statsPanel = new JPanel(new GridLayout(3, 1, 5, 0));
+        statsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        weeklyTimeLabel = new JLabel("Total Time: -");
+        weeklyCountLabel = new JLabel("Activities: -");
+        weeklyAvgLabel = new JLabel("Average per activity: -");
+        
+        statsPanel.add(weeklyTimeLabel);
+        statsPanel.add(weeklyCountLabel);
+        statsPanel.add(weeklyAvgLabel);
+        
+        card.add(statsPanel, BorderLayout.CENTER);
+        
+        return card;
+    }
+    
+    private void refreshSummaries() {
+        // Get daily summary for selected date
         SummaryService.Summary daily = summaryService.getDailySummary();
         
-        // Weekly summary
+        // Update daily labels
+        String dailyTimeFormatted = timeCalcService.formatTime(daily.getTotalTime());
+        dailyTimeLabel.setText("Total Time: " + dailyTimeFormatted);
+        dailyCountLabel.setText("Activities: " + daily.getActivityCount());
+        double dailyAvg = daily.getActivityCount() > 0 ? 
+                (double) daily.getTotalTime() / daily.getActivityCount() : 0;
+        dailyAvgLabel.setText("Average per activity: " + String.format("%.1f min", dailyAvg));
+        
+        // Get weekly summary
         SummaryService.Summary weekly = summaryService.getWeeklySummary();
         
-        // Update labels
-        for (Component comp : statsPanel.getComponents()) {
-            if (comp instanceof JLabel label) {
-                String text = label.getText();
-                
-                if (text.startsWith("Total Time:")) {
-                    String formattedTime = timeCalcService.formatTime(daily.getTotalTime());
-                    label.setText("Total Time: " + formattedTime);
-                } else if (text.startsWith("Activities:")) {
-                    label.setText("Activities: " + daily.getActivityCount());
-                } else if (text.startsWith("Average per activity:")) {
-                    double avg = timeCalcService.calculateAverageTimePerEntry();
-                    label.setText("Average per activity: " + String.format("%.1f min", avg));
-                }
-            }
-        }
+        // Update weekly labels
+        String weeklyTimeFormatted = timeCalcService.formatTime(weekly.getTotalTime());
+        weeklyTimeLabel.setText("Total Time: " + weeklyTimeFormatted);
+        weeklyCountLabel.setText("Activities: " + weekly.getActivityCount());
+        double weeklyAvg = weekly.getActivityCount() > 0 ? 
+                (double) weekly.getTotalTime() / weekly.getActivityCount() : 0;
+        weeklyAvgLabel.setText("Average per activity: " + String.format("%.1f min", weeklyAvg));
     }
 }
