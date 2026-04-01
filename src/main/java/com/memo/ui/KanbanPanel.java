@@ -162,19 +162,19 @@ public class KanbanPanel extends JPanel {
         String currentStatus = entry.status();
         ActivityEntry originalEntry = entry; // Capture for lambda
         
-        if (!currentStatus.equals("TODO")) {
+        if (!currentStatus.equals(Status.TODO)) {
             movePrev.setEnabled(true);
             movePrev.addActionListener(e -> changeEntryStatus(originalEntry, getPreviousStatus(currentStatus)));
         } else {
             movePrev.setEnabled(false);
         }
         
-        if (currentStatus.equals("TODO")) {
+        if (currentStatus.equals(Status.TODO)) {
             moveNext.setEnabled(true);
-            moveNext.addActionListener(e -> changeEntryStatus(originalEntry, "DOING"));
-        } else if (currentStatus.equals("DOING")) {
+            moveNext.addActionListener(e -> changeEntryStatus(originalEntry, Status.DOING));
+        } else if (currentStatus.equals(Status.DOING)) {
             moveNext.setEnabled(true);
-            moveNext.addActionListener(e -> changeEntryStatus(originalEntry, "DONE"));
+            moveNext.addActionListener(e -> changeEntryStatus(originalEntry, Status.DONE));
         } else {
             moveNext.setEnabled(false);
         }
@@ -198,10 +198,10 @@ public class KanbanPanel extends JPanel {
     }
     
     private String getPreviousStatus(String current) {
-        if (current.equals("DOING")) return "TODO";
-        if (current.equals("DONE")) return "DOING";
-        if (current.equals("NOTE")) return "DONE";
-        return "TODO";
+        if (current.equals(Status.DOING)) return Status.TODO;
+        if (current.equals(Status.DONE)) return Status.DOING;
+        if (current.equals(Status.NOTE)) return Status.DONE;
+        return Status.TODO;
     }
     
     private void changeEntryStatus(ActivityEntry entry, String newStatus) {
@@ -268,7 +268,7 @@ public class KanbanPanel extends JPanel {
         
         gbc.gridx = 1;
         gbc.gridwidth = 1;
-        String[] statuses = {"TODO", "DOING", "DONE", "NOTE"};
+        String[] statuses = {Status.TODO, Status.DOING, Status.DONE, Status.NOTE};
         JComboBox<String> statusCombo = new JComboBox<>(statuses);
         statusCombo.setSelectedItem(entry.status());
         dialog.add(statusCombo, gbc);
