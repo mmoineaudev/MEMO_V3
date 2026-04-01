@@ -146,7 +146,6 @@ public class CsvStorageService {
                         comment = decodeNewlines(comment);
                         status = decodeNewlines(status);
                         timestampStr = decodeNewlines(timestampStr);
-                        timeSpent = Integer.parseInt(decodeNewlines(String.valueOf(timeSpent)).trim());
                         
                         LocalDate date = timestampStr.isEmpty() 
                             ? LocalDate.now() 

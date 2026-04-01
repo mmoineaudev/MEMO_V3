@@ -95,12 +95,58 @@ public class EntryEditorDialog extends JDialog {
         timeSpentField.addActionListener(e -> onSave());
     }
     
+    /**
+     * Sets up autocomplete suggestions for a text field.
+     * Uses a simple approach: displays available suggestions in a tooltip
+     * and allows user to select by typing.
+     * 
+     * @param field The text field to enhance
+     * @param suggestions List of suggestion strings
+     */
     private void setupAutoComplete(JTextField field, List<String> suggestions) {
         if (suggestions == null || suggestions.isEmpty()) return;
         
-        // Simple approach: just set the first suggestion as default or placeholder
-        // For a proper autocomplete, we'd need a custom component or third-party library
-        // For now, we'll just leave it as a simple text field
+        // Show available suggestions in tooltip for user reference
+        String tooltipText = "Suggestions: " + String.join(", ", suggestions);
+        field.setToolTipText(tooltipText);
+        
+        // Add a document listener to highlight matching suggestions
+        field.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                updateSuggestions(field, suggestions);
+            }
+            
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                updateSuggestions(field, suggestions);
+            }
+            
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                updateSuggestions(field, suggestions);
+            }
+            
+            private void updateSuggestions(JTextField tf, List<String> suggs) {
+                String current = tf.getText().toLowerCase();
+                if (current.isEmpty()) {
+                    tf.setToolTipText(tooltipText);
+                    return;
+                }
+                
+                // Find matching suggestions
+                List<String> matches = suggs.stream()
+                        .filter(s -> s.toLowerCase().contains(current))
+                        .limit(5)
+                        .toList();
+                
+                if (!matches.isEmpty()) {
+                    tf.setToolTipText("Matches: " + String.join(", ", matches));
+                } else {
+                    tf.setToolTipText("No matches. Available: " + String.join(", ", suggs));
+                }
+            }
+        });
     }
     
     private void onSave() {

@@ -14,6 +14,7 @@ import java.util.TreeSet;
 public class KanbanService {
     
     private static final List<String> STATUS_FLOW = List.of("TODO", "DOING", "DONE");
+    private static final String NOTE_STATUS = "NOTE";
     
     private final HistoryService historyService;
     

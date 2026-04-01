@@ -10,6 +10,7 @@
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/EntryEditorService.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/ui/MemoFrame.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/ui/HistoryPanel.java
+/home/neo/Documents/MEMO_V3/src/main/java/com/memo/ui/ActivitiesPanel.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/CsvStorageService.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/ui/SummaryPanel.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/SettingsService.java

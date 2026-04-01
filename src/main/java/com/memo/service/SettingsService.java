@@ -144,7 +144,7 @@ public class SettingsService {
             
             Files.write(settingsFile, json.toString().getBytes());
         } catch (IOException e) {
-            // Silently handle save errors
+            System.err.println("Failed to save settings: " + e.getMessage());
         }
     }
     
@@ -176,7 +176,7 @@ public class SettingsService {
             // Parse key-value pairs
             parseSimpleJson(jsonContent);
         } catch (IOException e) {
-            // Silently handle load errors
+            System.err.println("Failed to load settings: " + e.getMessage());
         }
     }
     

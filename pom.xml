@@ -63,7 +63,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.memo.gui.MemoFrame</mainClass>
+                            <mainClass>com.memo.ui.MemoFrame</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -77,7 +77,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.memo.gui.MemoFrame</mainClass>
+                            <mainClass>com.memo.ui.MemoFrame</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
