@@ -6,6 +6,8 @@ import com.memo.service.TimeCalculationService;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -22,7 +24,7 @@ public class SearchPanel extends JPanel {
     private JButton searchButton;
     private JLabel resultCountLabel;
     private JLabel totalTimeLabel;
-    private JPanel resultsPanel;
+    private DefaultTableModel tableModel;
     
     public SearchPanel(SearchService searchService, 
                       TimeCalculationService timeCalcService) {
@@ -101,9 +103,21 @@ public class SearchPanel extends JPanel {
         
         // Table for results
         String[] columnNames = {"Type", "Description", "Status", "Time (min)", "Timestamp"};
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
         JTable table = new JTable(tableModel);
         table.setRowHeight(25);
+        
+        // Set column widths
+        table.getColumnModel().getColumn(0).setPreferredWidth(120);
+        table.getColumnModel().getColumn(1).setPreferredWidth(300);
+        table.getColumnModel().getColumn(2).setPreferredWidth(80);
+        table.getColumnModel().getColumn(3).setPreferredWidth(70);
+        table.getColumnModel().getColumn(4).setPreferredWidth(150);
         
         JScrollPane scrollPane = new JScrollPane(table);
         resultsArea.add(scrollPane, BorderLayout.CENTER);
@@ -140,6 +154,30 @@ public class SearchPanel extends JPanel {
         int totalTime = searchService.getTotalTimeSpent(results);
         String formattedTime = timeCalcService.formatTime(totalTime);
         totalTimeLabel.setText("Total time: " + formattedTime);
+        
+        // Populate table with results
+        populateTable(results);
+    }
+    
+    private void populateTable(List<ActivityEntry> entries) {
+        tableModel.setRowCount(0); // Clear existing rows
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        
+        for (ActivityEntry entry : entries) {
+            Object[] row = {
+                entry.activityType(),
+                entry.description(),
+                entry.status(),
+                String.valueOf(entry.timeSpent()),
+                formatTimestamp(entry.timestamp())
+            };
+            tableModel.addRow(row);
+        }
+    }
+    
+    private String formatTimestamp(LocalDateTime timestamp) {
+        return timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
     
     public void performSearchByDescription(String desc) {
