@@ -19,9 +19,7 @@ public class MemoFrame extends JFrame {
     private TimeCalculationService timeCalcService;
     private SettingsService settingsService;
     
-    private HistoryPanel historyPanel;
-    private SearchPanel searchPanel;
-    private SummaryPanel summaryPanel;
+    private ActivitiesPanel activitiesPanel;
     private KanbanPanel kanbanPanel;
     
     public MemoFrame() {
@@ -52,26 +50,26 @@ public class MemoFrame extends JFrame {
         
         // Top toolbar with "Add Entry" button
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
         JButton addButton = new JButton("+ Add Entry");
         addButton.setFont(addButton.getFont().deriveFont(java.awt.Font.BOLD));
+        addButton.setPreferredSize(new Dimension(120, 30));
         addButton.addActionListener(e -> openEntryEditor());
         toolbar.add(addButton);
         add(toolbar, BorderLayout.NORTH);
         
-        // Top panel with tabs
+        // Main panel with tabs
         JTabbedPane tabbedPane = new JTabbedPane();
         
-        // History panel
-        historyPanel = new HistoryPanel(historyService, editorService, kanbanService);
-        tabbedPane.addTab("History", historyPanel);
-        
-        // Search panel
-        searchPanel = new SearchPanel(searchService, timeCalcService);
-        tabbedPane.addTab("Search", searchPanel);
-        
-        // Summary panel
-        summaryPanel = new SummaryPanel(summaryService, timeCalcService);
-        tabbedPane.addTab("Summary", summaryPanel);
+        // Unified Activities panel (History + Search + Summary)
+        activitiesPanel = new ActivitiesPanel(
+                historyService, 
+                editorService, 
+                searchService,
+                summaryService,
+                timeCalcService
+        );
+        tabbedPane.addTab("Activities", activitiesPanel);
         
         // Kanban panel
         kanbanPanel = new KanbanPanel(kanbanService, editorService);
@@ -90,7 +88,7 @@ public class MemoFrame extends JFrame {
         dialog.setVisible(true);
         
         // Refresh all panels after adding entry
-        if (historyPanel != null) historyPanel.refreshTable();
+        if (activitiesPanel != null) activitiesPanel.refreshAll();
         if (kanbanPanel != null) kanbanPanel.refreshKanban();
     }
     
