@@ -1,6 +1,7 @@
 package com.memo.ui;
 
 import com.memo.model.ActivityEntry;
+import com.memo.model.Status;
 import com.memo.service.EntryEditorService;
 import com.memo.service.CsvStorageService;
 import javax.swing.*;
@@ -64,7 +65,7 @@ public class EntryEditorDialog extends JDialog {
         
         // Status
         mainPanel.add(new JLabel("Status:"));
-        String[] statuses = {"TODO", "DOING", "DONE", "NOTE"};
+        String[] statuses = Status.ALL_STATUSES.toArray(new String[0]);
         statusComboBox = new JComboBox<>(statuses);
         statusComboBox.setSelectedIndex(1); // DOING by default
         mainPanel.add(statusComboBox);

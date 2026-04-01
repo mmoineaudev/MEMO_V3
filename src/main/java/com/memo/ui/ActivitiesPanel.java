@@ -1,6 +1,7 @@
 package com.memo.ui;
 
 import com.memo.model.ActivityEntry;
+import com.memo.model.Status;
 import com.memo.service.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -99,8 +100,10 @@ public class ActivitiesPanel extends JPanel {
         searchPanel.add(new JLabel("Status:"), gbc);
         
         gbc.gridx = 5;
-        String[] statuses = {"ALL", "TODO", "DOING", "DONE", "NOTE"};
+        String[] statuses = Status.ALL_STATUSES.toArray(new String[0]);
         statusComboBox = new JComboBox<>(statuses);
+        statusComboBox.insertItemAt("ALL", 0);
+        statusComboBox.setSelectedIndex(0);
         statusComboBox.addActionListener(e -> applyFilters());
         searchPanel.add(statusComboBox, gbc);
         
@@ -261,18 +264,18 @@ public class ActivitiesPanel extends JPanel {
             
             if (value == null) return;
             
-            String status = value.toString().toUpperCase();
+            String status = value.toString();
             switch (status) {
-                case "DONE":
+                case Status.DONE:
                     setForeground(Color.GREEN);
                     break;
-                case "DOING":
+                case Status.DOING:
                     setForeground(Color.ORANGE);
                     break;
-                case "TODO":
+                case Status.TODO:
                     setForeground(Color.BLUE);
                     break;
-                case "NOTE":
+                case Status.NOTE:
                     setForeground(new Color(128, 0, 128)); // Magenta
                     break;
                 default:

@@ -1,6 +1,7 @@
 package com.memo.ui;
 
 import com.memo.model.ActivityEntry;
+import com.memo.model.Status;
 import com.memo.service.EntryEditorService;
 import com.memo.service.HistoryService;
 import com.memo.service.KanbanService;
@@ -33,42 +34,42 @@ public class KanbanPanel extends JPanel {
         boardPanel.setBorder(BorderFactory.createTitledBorder("Kanban Board"));
         
         // TODO column
-        JPanel todoColumn = createKanbanColumn("TODO", "TODO");
+        JPanel todoColumn = createKanbanColumn(Status.TODO);
         boardPanel.add(todoColumn);
         
         // DOING column
-        JPanel doingColumn = createKanbanColumn("DOING", "DOING");
+        JPanel doingColumn = createKanbanColumn(Status.DOING);
         boardPanel.add(doingColumn);
         
         // DONE column
-        JPanel doneColumn = createKanbanColumn("DONE", "DONE");
+        JPanel doneColumn = createKanbanColumn(Status.DONE);
         boardPanel.add(doneColumn);
         
         // NOTE column
-        JPanel noteColumn = createKanbanColumn("NOTE", "NOTE");
+        JPanel noteColumn = createKanbanColumn(Status.NOTE);
         boardPanel.add(noteColumn);
         
         add(boardPanel, BorderLayout.CENTER);
     }
     
-    private JPanel createKanbanColumn(String title, String status) {
+    private JPanel createKanbanColumn(String status) {
         JPanel column = new JPanel(new BorderLayout());
         column.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(title),
+                BorderFactory.createTitledBorder(Status.getDisplayName(status)),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         
         // Column header with count
         int count = kanbanService.getTaskCountByStatus(status);
-        JLabel headerLabel = new JLabel(status + " (" + count + ")");
+        JLabel headerLabel = new JLabel(Status.getDisplayName(status) + " (" + count + ")");
         headerLabel.setFont(new Font("Arial", Font.BOLD, 14));
         
-        if (status.equals("TODO")) {
+        if (status.equals(Status.TODO)) {
             headerLabel.setForeground(Color.BLUE);
-        } else if (status.equals("DOING")) {
+        } else if (status.equals(Status.DOING)) {
             headerLabel.setForeground(Color.ORANGE);
-        } else if (status.equals("DONE")) {
+        } else if (status.equals(Status.DONE)) {
             headerLabel.setForeground(Color.GREEN);
-        } else if (status.equals("NOTE")) {
+        } else if (status.equals(Status.NOTE)) {
             headerLabel.setForeground(new Color(128, 0, 128)); // Magenta for NOTE
         }
         
