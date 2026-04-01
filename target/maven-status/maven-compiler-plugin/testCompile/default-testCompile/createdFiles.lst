@@ -1,0 +1,9 @@
+com/memo/service/TimeCalculationServiceTest.class
+com/memo/service/KanbanServiceTest.class
+com/memo/service/EntryEditorServiceTest.class
+com/memo/service/HistoryServiceTest.class
+com/memo/service/SettingsServiceTest.class
+com/memo/service/SearchServiceTest.class
+com/memo/model/ActivityEntryTest.class
+com/memo/service/CsvStorageServiceTest.class
+com/memo/service/SummaryServiceTest.class
