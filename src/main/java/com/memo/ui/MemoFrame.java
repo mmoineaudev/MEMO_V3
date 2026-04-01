@@ -50,6 +50,14 @@ public class MemoFrame extends JFrame {
     private void createUI() {
         setLayout(new BorderLayout());
         
+        // Top toolbar with "Add Entry" button
+        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton addButton = new JButton("+ Add Entry");
+        addButton.setFont(addButton.getFont().deriveFont(java.awt.Font.BOLD));
+        addButton.addActionListener(e -> openEntryEditor());
+        toolbar.add(addButton);
+        add(toolbar, BorderLayout.NORTH);
+        
         // Top panel with tabs
         JTabbedPane tabbedPane = new JTabbedPane();
         
@@ -75,6 +83,15 @@ public class MemoFrame extends JFrame {
         JLabel statusBar = new JLabel("Ready");
         statusBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         add(statusBar, BorderLayout.SOUTH);
+    }
+    
+    private void openEntryEditor() {
+        EntryEditorDialog dialog = new EntryEditorDialog(this, editorService, storageService);
+        dialog.setVisible(true);
+        
+        // Refresh all panels after adding entry
+        if (historyPanel != null) historyPanel.refreshTable();
+        if (kanbanPanel != null) kanbanPanel.refreshKanban();
     }
     
     private void loadHistory() {

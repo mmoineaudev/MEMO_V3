@@ -204,4 +204,48 @@ public class CsvStorageService {
         // Return as-is for non-quoted values
         return value;
     }
+    
+    /**
+     * Checks if the storage directory exists.
+     * 
+     * @return true if the storage directory exists and is a directory
+     */
+    public boolean storageDirectoryExists() {
+        Path dirPath = Paths.get(storageDir);
+        return Files.exists(dirPath) && Files.isDirectory(dirPath);
+    }
+    
+    /**
+     * Creates the storage directory if it doesn't exist.
+     * 
+     * @throws IOException if the directory cannot be created
+     */
+    public void createStorageDirectory() throws IOException {
+        Path dirPath = Paths.get(storageDir);
+        if (!Files.exists(dirPath)) {
+            Files.createDirectories(dirPath);
+        }
+    }
+    
+    /**
+     * Saves all entries to CSV files, organized by date.
+     * 
+     * @param entries List of entries to save
+     * @throws IOException if writing fails
+     */
+    public void saveAll(List<ActivityEntry> entries) throws IOException {
+        // Ensure storage directory exists
+        if (!storageDirectoryExists()) {
+            createStorageDirectory();
+        }
+        
+        // Save each entry
+        for (ActivityEntry entry : entries) {
+            try {
+                save(entry);
+            } catch (IOException e) {
+                throw new IOException("Failed to save entry: " + entry.description(), e);
+            }
+        }
+    }
 }

@@ -130,4 +130,15 @@ public class KanbanPanel extends JPanel {
         
         return card;
     }
+    
+    /**
+     * Refreshes the Kanban board display.
+     */
+    public void refreshKanban() {
+        // Remove old components and recreate
+        removeAll();
+        createKanbanBoard();
+        revalidate();
+        repaint();
+    }
 }
