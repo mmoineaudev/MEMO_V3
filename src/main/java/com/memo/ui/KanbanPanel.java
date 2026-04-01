@@ -24,7 +24,7 @@ public class KanbanPanel extends JPanel {
     }
     
     private void createKanbanBoard() {
-        JPanel boardPanel = new JPanel(new GridLayout(1, 3, 10, 0));
+        JPanel boardPanel = new JPanel(new GridLayout(1, 4, 10, 0));
         boardPanel.setBorder(BorderFactory.createTitledBorder("Kanban Board"));
         
         // TODO column
@@ -38,6 +38,10 @@ public class KanbanPanel extends JPanel {
         // DONE column
         JPanel doneColumn = createKanbanColumn("DONE", "DONE");
         boardPanel.add(doneColumn);
+        
+        // NOTE column
+        JPanel noteColumn = createKanbanColumn("NOTE", "NOTE");
+        boardPanel.add(noteColumn);
         
         add(boardPanel, BorderLayout.CENTER);
     }
@@ -57,8 +61,10 @@ public class KanbanPanel extends JPanel {
             headerLabel.setForeground(Color.BLUE);
         } else if (status.equals("DOING")) {
             headerLabel.setForeground(Color.ORANGE);
-        } else {
+        } else if (status.equals("DONE")) {
             headerLabel.setForeground(Color.GREEN);
+        } else if (status.equals("NOTE")) {
+            headerLabel.setForeground(new Color(128, 0, 128)); // Magenta for NOTE
         }
         
         column.add(headerLabel, BorderLayout.NORTH);
