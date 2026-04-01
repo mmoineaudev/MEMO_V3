@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Panel for displaying and managing activity history in a table.
@@ -69,7 +70,12 @@ public class HistoryPanel extends JPanel {
     public void refreshTable() {
         tableModel.setRowCount(0);
         
-        for (ActivityEntry entry : historyService.getAll()) {
+        // Get all entries and sort by timestamp (newest first)
+        List<ActivityEntry> sortedEntries = historyService.getAll().stream()
+                .sorted((e1, e2) -> e2.timestamp().compareTo(e1.timestamp()))
+                .toList();
+        
+        for (ActivityEntry entry : sortedEntries) {
             Object[] row = {
                     entry.activityType(),
                     entry.description(),
