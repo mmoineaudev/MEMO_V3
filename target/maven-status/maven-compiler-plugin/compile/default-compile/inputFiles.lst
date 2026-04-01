@@ -1,7 +1,7 @@
-/home/neo/Documents/MEMO_V3/src/main/java/com/memo/ui/SearchPanel.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/ui/KanbanPanel.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/TimeCalculationService.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/model/ActivityEntry.java
+/home/neo/Documents/MEMO_V3/src/main/java/com/memo/model/Status.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/SummaryService.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/KanbanService.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/HistoryService.java
@@ -11,5 +11,4 @@
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/ui/MemoFrame.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/ui/ActivitiesPanel.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/CsvStorageService.java
-/home/neo/Documents/MEMO_V3/src/main/java/com/memo/ui/SummaryPanel.java
 /home/neo/Documents/MEMO_V3/src/main/java/com/memo/service/SettingsService.java

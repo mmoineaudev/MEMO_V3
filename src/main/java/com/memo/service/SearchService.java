@@ -1,6 +1,7 @@
 package com.memo.service;
 
 import com.memo.model.ActivityEntry;
+import com.memo.model.Status;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -220,6 +221,10 @@ public class SearchService {
      * @return List of entries with matching status
      */
     public List<ActivityEntry> getEntriesByStatus(String status) {
+        if (status == null || !Status.isValid(status)) {
+            return new ArrayList<>();
+        }
+        
         return historyService.getAll().stream()
                 .filter(entry -> entry.status().equals(status))
                 .toList();

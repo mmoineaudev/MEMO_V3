@@ -1,6 +1,7 @@
 package com.memo.service;
 
 import com.memo.model.ActivityEntry;
+import com.memo.model.Status;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +14,8 @@ import java.util.TreeSet;
  */
 public class KanbanService {
     
-    private static final List<String> STATUS_FLOW = List.of("TODO", "DOING", "DONE");
-    private static final String NOTE_STATUS = "NOTE";
+    private static final List<String> STATUS_FLOW = Status.KANBAN_FLOW;
+    private static final String NOTE_STATUS = Status.NOTE;
     
     private final HistoryService historyService;
     

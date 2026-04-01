@@ -1,6 +1,7 @@
 package com.memo.service;
 
 import com.memo.model.ActivityEntry;
+import com.memo.model.Status;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -86,14 +87,12 @@ public class TimeCalculationService {
      * @return Total time in minutes
      */
     public int getTimeByStatus(String status) {
-        if (status == null || status.trim().isEmpty()) {
+        if (status == null || !Status.isValid(status)) {
             return 0;
         }
         
-        String lowerStatus = status.toUpperCase();
-        
         return historyService.getAll().stream()
-                .filter(entry -> entry.status().equals(lowerStatus))
+                .filter(entry -> entry.status().equals(status))
                 .mapToInt(ActivityEntry::timeSpent)
                 .sum();
     }
